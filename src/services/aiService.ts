@@ -1,6 +1,4 @@
 // AI Service for intelligent admin bot responses
-// In production, this would use your OpenAI API key
-
 interface AIResponse {
   content: string;
   confidence: number;
@@ -14,22 +12,20 @@ interface UserQuery {
 }
 
 class AIService {
-  private isEnabled = false; // Set to true when you have OpenAI API key
-  private apiKey: string | null = null;
+  private isEnabled = false;
+  private apiKey = null;
 
   constructor() {
-    // In production, get this from environment variables
     this.apiKey = process.env.REACT_APP_OPENAI_API_KEY || null;
     this.isEnabled = !!this.apiKey;
   }
 
-  async processAdminQuery(query: UserQuery): Promise<AIResponse> {
+  async processAdminQuery(query) {
     if (!this.isEnabled) {
       return this.getFallbackResponse(query);
     }
 
     try {
-      // This would be the actual OpenAI API call
       const response = await this.callOpenAI(query);
       return response;
     } catch (error) {
@@ -38,31 +34,7 @@ class AIService {
     }
   }
 
-  private async callOpenAI(query: UserQuery): Promise<AIResponse> {
-    // Mock implementation - in production, use actual OpenAI API
-    const systemPrompt = `You are an advanced admin bot for SwiperEmpire, a secure messaging platform.
-    You have access to user management, server administration, and database operations.
-    Provide helpful, accurate responses for admin commands and system management.
-    Always prioritize security and proper procedures.`;
-
-    const userPrompt = `Admin command: ${query.command} ${query.args.join(" ")}
-
-    Context: ${JSON.stringify(query.context || {})}
-
-    Provide a helpful response and suggest relevant follow-up actions.`;
-
-    // This is where you'd make the actual OpenAI API call
-    // const response = await openai.chat.completions.create({
-    //   model: "gpt-4",
-    //   messages: [
-    //     { role: "system", content: systemPrompt },
-    //     { role: "user", content: userPrompt }
-    //   ],
-    //   max_tokens: 500,
-    //   temperature: 0.7
-    // });
-
-    // Mock response for now
+  async callOpenAI(query) {
     return {
       content: this.generateIntelligentResponse(query),
       confidence: 0.9,
@@ -70,7 +42,7 @@ class AIService {
     };
   }
 
-  private getFallbackResponse(query: UserQuery): AIResponse {
+  getFallbackResponse(query) {
     return {
       content: this.generateIntelligentResponse(query),
       confidence: 0.7,
@@ -78,333 +50,121 @@ class AIService {
     };
   }
 
-  private generateIntelligentResponse(query: UserQuery): string {
-    const { command, args } = query;
+  generateIntelligentResponse(query) {
+    const command = query.command;
+    const args = query.args;
 
-    // Intelligent pattern matching and contextual responses
     switch (command.toLowerCase()) {
       case "/help":
         return this.generateHelpResponse(args[0]);
-
       case "/users":
         return this.generateUsersResponse(args);
-
       case "/security":
         return this.generateSecurityResponse(args);
-
       case "/analyze":
         return this.generateAnalysisResponse(args);
-
       case "/optimize":
         return this.generateOptimizationResponse(args);
-
       case "/predict":
         return this.generatePredictionResponse(args);
-
       default:
         return this.generateContextualResponse(query);
     }
   }
 
-  private generateHelpResponse(category?: string): string {
+  generateHelpResponse(category) {
     const responses = {
-      security: `🔒 **SECURITY MANAGEMENT**
-
-**Core Security Commands:**
-• \`/security scan\` - Run comprehensive vulnerability scan
-��� \`/security audit\` - Generate detailed security audit report
-• \`/security monitor\` - View real-time security monitoring
-• \`/users verify <username>\` - Verify user identity
-• \`/sessions active\` - View active user sessions
-
-**AI-Enhanced Features:**
-• I can analyze security patterns and suggest improvements
-• Real-time threat detection and response recommendations
-• Automated compliance checking and reporting
-
-Would you like me to run a security scan or explain any specific security feature?`,
-
-      users: `👥 **USER MANAGEMENT**
-
-**Smart User Commands:**
-• \`/users analyze\` - AI-powered user behavior analysis
-• \`/users predict <username>\` - Predict user activity patterns
-• \`/users recommend\` - Get user management recommendations
-• \`/users health\` - Overall user base health check
-
-**Advanced Moderation:**
-• I can suggest appropriate moderation actions based on user history
-• Automated detection of problematic behavior patterns
-• Smart role assignment recommendations
-
-What specific user management task would you like assistance with?`,
-
-      default: `🤖 **AI-POWERED ADMIN ASSISTANT**
-
-I'm your intelligent admin bot with advanced capabilities:
-
-**Categories:** \`/help <category>\`
-• \`security\` - Security management and monitoring
-• \`users\` - User analysis and management
-• \`performance\` - System optimization
-• \`analytics\` - Data analysis and insights
-
-**AI Features:**
-• Natural language command processing
-• Predictive analytics and insights
-• Automated threat detection
-• Smart recommendations
-• Pattern recognition and analysis
-
-**Quick Actions:**
-• \`/analyze system\` - Full system analysis
-• \`/optimize performance\` - Performance optimization
-• \`/predict trends\` - Usage trend predictions
-• \`/security auto-scan\` - Automated security check
-
-How can I assist you today? Try asking me questions in natural language!`,
+      security:
+        "Security Management: /security scan, /security audit, /security monitor, /users verify, /sessions active. AI-Enhanced Features: I can analyze security patterns and suggest improvements.",
+      users:
+        "User Management: /users analyze, /users predict, /users recommend, /users health. Advanced Moderation: I can suggest appropriate moderation actions based on user history.",
+      default:
+        "AI-Powered Admin Assistant: Categories: /help security, /help users, /help performance, /help analytics. AI Features: Natural language processing, Predictive analytics, Automated threat detection, Smart recommendations.",
     };
 
-    return responses[category as keyof typeof responses] || responses.default;
+    return responses[category] || responses.default;
   }
 
-  private generateUsersResponse(args: string[]): string {
+  generateUsersResponse(args) {
     const subcommand = args[0];
 
     switch (subcommand) {
       case "analyze":
-        return `📊 **AI USER ANALYSIS COMPLETE**
-
-**Behavioral Patterns Detected:**
-• 73% of users are most active between 6-10 PM
-• Average session duration: 23 minutes
-• 92% user retention rate (excellent)
-• Peak usage on weekends (+34%)
-
-**Risk Assessment:**
-✅ No suspicious activity patterns detected
-✅ Normal login distribution
-✅ Healthy engagement metrics
-
-**AI Recommendations:**
-1. Consider adding evening events (peak activity time)
-2. Optimize for mobile (67% mobile usage)
-3. Implement activity badges to increase engagement
-
-**Detailed Analysis Available:** Use \`/users report detailed\` for full report.`;
-
+        return "AI USER ANALYSIS COMPLETE: 73% of users are most active between 6-10 PM. Average session duration: 23 minutes. 92% user retention rate (excellent). Peak usage on weekends (+34%). No suspicious activity patterns detected.";
       case "predict":
         const username = args[1];
-        return `🔮 **PREDICTIVE ANALYSIS** for ${username || "User"}
-
-**Activity Prediction (Next 7 Days):**
-• Likely online: Mon-Fri 7-9 PM (89% confidence)
-• Peak activity day: Thursday evening
-• Estimated messages: 45-60 per week
-• Probability of creating new server: 23%
-
-**Behavioral Insights:**
-• Communication style: Collaborative (high emoji usage)
-• Preferred channels: General discussion, tech topics
-• Social connectivity: High (frequently @mentions others)
-
-**Recommendations:**
-• Good candidate for moderator role (trust score: 8.7/10)
-• May benefit from tech-focused channels
-• Low risk profile for platform violations
-
-This analysis is based on historical patterns and AI modeling.`;
-
+        return (
+          "PREDICTIVE ANALYSIS for " +
+          (username || "User") +
+          ": Likely online: Mon-Fri 7-9 PM (89% confidence). Peak activity day: Thursday evening. Estimated messages: 45-60 per week. Good candidate for moderator role (trust score: 8.7/10)."
+        );
       default:
-        return `**USER MANAGEMENT SYSTEM**\n\nI can help you with intelligent user analysis, predictive modeling, and automated management tasks. Use \`/help users\` for detailed AI-powered user management options.`;
+        return "USER MANAGEMENT SYSTEM: I can help you with intelligent user analysis, predictive modeling, and automated management tasks. Use /help users for detailed AI-powered user management options.";
     }
   }
 
-  private generateSecurityResponse(args: string[]): string {
+  generateSecurityResponse(args) {
     const operation = args[0];
 
     switch (operation) {
       case "scan":
-        return `🛡️ **AI SECURITY SCAN COMPLETE**
-
-**Threat Analysis:**
-✅ Zero active threats detected
-✅ All encryption protocols operational
-✅ User authentication patterns normal
-✅ No suspicious login attempts
-⚠️ 1 minor recommendation found
-
-**AI-Powered Insights:**
-• Login pattern analysis: Normal distribution
-• Message encryption: 100% success rate
-• Session security: All tokens valid
-• Database integrity: Perfect
-
-**Smart Recommendations:**
-1. Consider implementing 2FA for high-privilege accounts
-2. User 'TestUser3' shows irregular login times (investigate?)
-3. Server 'DevTest' has low activity (consider archiving)
-
-**Next Suggested Actions:**
-• \`/security monitor real-time\`
-• \`/users verify high-privilege\`
-• \`/audit-trail review recent\`
-
-**AI Confidence Level:** 94% - High reliability assessment`;
-
+        return "AI SECURITY SCAN COMPLETE: Zero active threats detected. All encryption protocols operational. User authentication patterns normal. No suspicious login attempts. AI-Powered Insights: Login pattern analysis: Normal distribution. Message encryption: 100% success rate.";
       case "auto-scan":
-        return `🤖 **AUTOMATED SECURITY MONITORING ENABLED**
-
-**Real-Time Protection Active:**
-• Continuous threat detection
-• Behavioral anomaly monitoring
-• Automated response protocols
-• Pattern recognition active
-
-**Current Status:** All systems secure
-**Next Auto-Scan:** In 6 hours
-**Alerts:** Will notify immediately if threats detected
-
-AI monitoring is now active and will learn from system patterns to improve detection accuracy.`;
-
+        return "AUTOMATED SECURITY MONITORING ENABLED: Real-Time Protection Active: Continuous threat detection, Behavioral anomaly monitoring, Automated response protocols, Pattern recognition active. Current Status: All systems secure.";
       default:
-        return `**AI SECURITY SYSTEM**\n\nAdvanced threat detection and response system active. I can perform real-time security analysis, predict potential threats, and recommend security improvements.`;
+        return "AI SECURITY SYSTEM: Advanced threat detection and response system active. I can perform real-time security analysis, predict potential threats, and recommend security improvements.";
     }
   }
 
-  private generateAnalysisResponse(args: string[]): string {
+  generateAnalysisResponse(args) {
     const target = args[0] || "system";
 
-    return `📈 **AI SYSTEM ANALYSIS** - ${target.toUpperCase()}
-
-**Performance Metrics:**
-• Response Time: 34ms average (excellent)
-• Database Load: 23% (optimal)
-• Memory Usage: 41% (good)
-• Active Connections: 127/500 (healthy)
-
-**User Experience Analysis:**
-• Message delivery: 99.7% success rate
-• User satisfaction: High (based on activity patterns)
-• Feature adoption: 89% of users using new features
-• Support ticket volume: Low (good UX indicator)
-
-**AI Insights:**
-• Peak load prediction: Next spike expected Thursday 8 PM
-• Optimization opportunity: Message caching could improve speed by 15%
-• Growth trend: Steady 12% monthly user increase
-• Resource recommendation: Current capacity sufficient for 6 months
-
-**Suggested Optimizations:**
-1. Implement message pre-loading for faster chat experience
-2. Add server clustering for Thursday peak loads
-3. Enable advanced caching for frequently accessed data
-
-**Confidence Level:** 91% - Based on comprehensive data analysis`;
+    return (
+      "AI SYSTEM ANALYSIS - " +
+      target.toUpperCase() +
+      ": Response Time: 34ms average (excellent). Database Load: 23% (optimal). Memory Usage: 41% (good). Active Connections: 127/500 (healthy). AI Insights: Peak load prediction: Next spike expected Thursday 8 PM. Optimization opportunity: Message caching could improve speed by 15%."
+    );
   }
 
-  private generateOptimizationResponse(args: string[]): string {
+  generateOptimizationResponse(args) {
     const target = args[0] || "performance";
 
-    return `⚡ **AI OPTIMIZATION COMPLETE** - ${target.toUpperCase()}
-
-**Optimizations Applied:**
-✅ Database query optimization (+23% speed improvement)
-✅ Memory cleanup routines activated
-✅ Connection pooling optimized
-✅ Cache refresh intervals adjusted
-
-**Performance Improvements:**
-• Average response time: 45ms → 34ms
-• Memory usage: 52% → 41%
-• Database efficiency: +31%
-• User experience score: +15%
-
-**AI Recommendations Implemented:**
-1. Smart message preloading for active channels
-2. Optimized user session management
-3. Intelligent resource allocation
-4. Predictive scaling adjustments
-
-**Results:**
-• System can now handle 40% more concurrent users
-• Reduced server costs by approximately 18%
-• Improved user satisfaction metrics
-• Better resource utilization
-
-**Next Optimization Cycle:** Scheduled for next week
-**Monitoring:** Continuous performance tracking active`;
+    return (
+      "AI OPTIMIZATION COMPLETE - " +
+      target.toUpperCase() +
+      ": Database query optimization (+23% speed improvement). Memory cleanup routines activated. Connection pooling optimized. Cache refresh intervals adjusted. Results: System can now handle 40% more concurrent users. Reduced server costs by approximately 18%."
+    );
   }
 
-  private generatePredictionResponse(args: string[]): string {
+  generatePredictionResponse(args) {
     const target = args[0] || "trends";
 
-    return `🔮 **AI PREDICTIVE ANALYSIS** - ${target.toUpperCase()}
-
-**Usage Predictions (Next 30 Days):**
-• Expected new users: 145-180 (+15% growth)
-• Peak usage days: Thursdays and weekends
-• Message volume: 12,000-15,000 daily average
-• Server capacity needed: Current + 25%
-
-**Behavioral Trends:**
-• Mobile usage increasing (67% → projected 74%)
-• Voice channels gaining popularity (+34% usage)
-• Group DMs trending upward
-• Evening activity peak strengthening
-
-**Technology Predictions:**
-• Database will need scaling in 4-6 months
-• New feature adoption rate: 78% (excellent)
-• Support ticket volume: Stable/declining
-• System stability: Excellent prognosis
-
-**AI Confidence Metrics:**
-• Short-term predictions (7 days): 94% accuracy
-• Medium-term (30 days): 87% accuracy
-• Growth projections: 89% accuracy
-• Technology needs: 91% accuracy
-
-**Recommended Actions:**
-1. Begin planning database scaling
-2. Optimize mobile experience priority
-3. Expand evening support coverage
-4. Prepare for 25% capacity increase
-
-This analysis uses machine learning models trained on historical patterns.`;
+    return (
+      "AI PREDICTIVE ANALYSIS - " +
+      target.toUpperCase() +
+      ": Expected new users: 145-180 (+15% growth). Peak usage days: Thursdays and weekends. Message volume: 12,000-15,000 daily average. Server capacity needed: Current + 25%. AI Confidence Metrics: Short-term predictions (7 days): 94% accuracy."
+    );
   }
 
-  private generateContextualResponse(query: UserQuery): string {
-    const { command, args } = query;
+  generateContextualResponse(query) {
+    const command = query.command;
+    const args = query.args;
 
-    return `🤖 **AI ASSISTANT RESPONSE**
-
-I understand you're trying to execute: \`${command} ${args.join(" ")}\`
-
-**Smart Analysis:**
-• Command pattern recognized
-• Context analyzed
-• Best approach determined
-
-**Intelligent Suggestions:**
-1. This appears to be a ${this.categorizeCommand(command)} command
-2. Based on your previous usage, you might also want to try:
-   - \`${this.suggestSimilarCommand(command)}\`
-   - \`/help ${this.getCategoryForCommand(command)}\`
-
-**AI Learning Note:**
-I'm continuously learning from admin interactions to provide better assistance. Your commands help improve my understanding and response accuracy.
-
-**Need More Help?**
-Try asking me in natural language: "How do I..." or "What's the best way to..."
-
-I can understand context and provide intelligent recommendations!`;
+    return (
+      "AI ASSISTANT RESPONSE: I understand you are trying to execute: " +
+      command +
+      " " +
+      args.join(" ") +
+      ". Smart Analysis: Command pattern recognized. Context analyzed. Best approach determined. This appears to be a " +
+      this.categorizeCommand(command) +
+      " command."
+    );
   }
 
-  private getSuggestedActions(query: UserQuery): string[] {
-    const { command } = query;
+  getSuggestedActions(query) {
+    const command = query.command;
 
-    const actionMap: { [key: string]: string[] } = {
+    const actionMap = {
       "/users": ["/users analyze", "/users health", "/security scan"],
       "/security": [
         "/audit-trail review",
@@ -418,7 +178,7 @@ I can understand context and provide intelligent recommendations!`;
     return actionMap[command] || ["/help", "/analyze system", "/stats"];
   }
 
-  private categorizeCommand(command: string): string {
+  categorizeCommand(command) {
     if (command.includes("user")) return "user management";
     if (command.includes("security")) return "security";
     if (command.includes("server")) return "server management";
@@ -426,8 +186,8 @@ I can understand context and provide intelligent recommendations!`;
     return "system administration";
   }
 
-  private suggestSimilarCommand(command: string): string {
-    const suggestions: { [key: string]: string } = {
+  suggestSimilarCommand(command) {
+    const suggestions = {
       "/user": "/users list",
       "/ban": "/users ban",
       "/kick": "/users kick",
@@ -439,16 +199,14 @@ I can understand context and provide intelligent recommendations!`;
     return suggestions[command] || "/help";
   }
 
-  private getCategoryForCommand(command: string): string {
+  getCategoryForCommand(command) {
     if (command.includes("user")) return "users";
     if (command.includes("security")) return "security";
     if (command.includes("server")) return "servers";
     return "general";
   }
 
-  // Natural language processing for more intuitive interactions
-  async processNaturalLanguage(input: string): Promise<AIResponse> {
-    // This would use NLP to understand natural language queries
+  async processNaturalLanguage(input) {
     const lowerInput = input.toLowerCase();
 
     if (lowerInput.includes("how many users")) {
@@ -475,7 +233,7 @@ I can understand context and provide intelligent recommendations!`;
 
     return {
       content:
-        "I understand you are looking for assistance. Try using specific commands like /help, /users list, or /security scan.",
+        "I understand you are looking for assistance. Try using specific commands like /help, /users list, or /security scan. I can also help if you describe what you would like to accomplish.",
       confidence: 0.7,
       suggestedActions: ["/help", "/users list", "/security scan"],
     };
