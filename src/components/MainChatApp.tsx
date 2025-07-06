@@ -28,6 +28,7 @@ import {
   Copy,
   Reply,
   LogOut,
+  Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChat } from "@/contexts/ChatContext";
+import AdminBot from "./AdminBot";
+import UserProfile from "./UserProfile";
 
 const MainChatApp: React.FC = () => {
   const { currentUser, logout } = useAuth();
@@ -70,6 +73,7 @@ const MainChatApp: React.FC = () => {
   const [showChannelCreator, setShowChannelCreator] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [selectedDM, setSelectedDM] = useState<string | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -266,7 +270,10 @@ const MainChatApp: React.FC = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-gray-800 border-gray-600">
-                <DropdownMenuItem className="text-white hover:bg-gray-700">
+                <DropdownMenuItem
+                  className="text-white hover:bg-gray-700"
+                  onClick={() => setShowProfile(true)}
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   User Settings
                 </DropdownMenuItem>
@@ -352,181 +359,159 @@ const MainChatApp: React.FC = () => {
           )}
         </div>
 
-        {/* Messages */}
-        <ScrollArea className="flex-1 p-4">
-          {(selectedDM
-            ? directMessages
-            : messages.filter((m) => m.channelId === currentChannel?.id)
-          ).length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="mb-6">
-                {isAdminChannel ? (
-                  <Crown className="h-16 w-16 mx-auto text-yellow-500 mb-4" />
-                ) : (
+        {/* Messages / Admin Bot */}
+        {isAdminChannel ? (
+          <AdminBot onCommand={executeAdminCommand} />
+        ) : (
+          <ScrollArea className="flex-1 p-4">
+            {(selectedDM
+              ? directMessages
+              : messages.filter((m) => m.channelId === currentChannel?.id)
+            ).length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <div className="mb-6">
                   <Hash className="h-16 w-16 mx-auto text-purple-400 mb-4" />
-                )}
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  {isAdminChannel
-                    ? "Admin Console Ready"
-                    : `Welcome to #${currentChannel?.name}`}
-                </h3>
-                <p className="text-gray-400 mb-4">
-                  {isAdminChannel
-                    ? "Execute admin commands and manage the bot."
-                    : "This is the beginning of your conversation."}
-                </p>
-
-                {isAdminChannel && (
-                  <div className="bg-gray-800/50 rounded-lg p-4 max-w-md mx-auto">
-                    <h4 className="text-sm font-medium text-white mb-2">
-                      Available Commands:
-                    </h4>
-                    <div className="text-xs text-gray-300 space-y-1">
-                      {adminCommands.slice(0, 5).map((cmd) => (
-                        <div key={cmd.command} className="flex justify-between">
-                          <code className="text-purple-300">{cmd.command}</code>
-                          <span>{cmd.description}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {(selectedDM
-                ? directMessages
-                : messages.filter((m) => m.channelId === currentChannel?.id)
-              ).map((message) => (
-                <div
-                  key={message.id}
-                  className="flex items-start space-x-3 group"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-purple-600 text-white">
-                      {message.authorId === currentUser?.id
-                        ? currentUser.username.charAt(0).toUpperCase()
-                        : "U"}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-white">
-                        {message.authorId === currentUser?.id
-                          ? currentUser.displayName
-                          : "User"}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {message.timestamp.toLocaleTimeString()}
-                      </span>
-                      {message.isDisappearing && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-purple-500/20 text-purple-300 text-xs"
-                        >
-                          Disappearing in 35s
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-gray-300">{message.content}</p>
-                  </div>
-
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-48 bg-gray-800 border-gray-600">
-                        <DropdownMenuItem className="text-white hover:bg-gray-700">
-                          <Reply className="h-4 w-4 mr-2" />
-                          Reply
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-white hover:bg-gray-700">
-                          <Copy className="h-4 w-4 mr-2" />
-                          Copy Text
-                        </DropdownMenuItem>
-                        {message.authorId === currentUser?.id && (
-                          <DropdownMenuItem
-                            className="text-red-400 hover:bg-red-900"
-                            onClick={() => deleteMessage(message.id)}
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    Welcome to #{currentChannel?.name}
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    This is the beginning of your conversation.
+                  </p>
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {(selectedDM
+                  ? directMessages
+                  : messages.filter((m) => m.channelId === currentChannel?.id)
+                ).map((message) => (
+                  <div
+                    key={message.id}
+                    className="flex items-start space-x-3 group"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-purple-600 text-white">
+                        {message.authorId === currentUser?.id
+                          ? currentUser.username.charAt(0).toUpperCase()
+                          : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-medium text-white">
+                          {message.authorId === currentUser?.id
+                            ? currentUser.displayName
+                            : "User"}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {message.timestamp.toLocaleTimeString()}
+                        </span>
+                        {message.isDisappearing && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-purple-500/20 text-purple-300 text-xs"
+                          >
+                            Disappearing in 35s
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-gray-300">{message.content}</p>
+                    </div>
+
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-48 bg-gray-800 border-gray-600">
+                          <DropdownMenuItem className="text-white hover:bg-gray-700">
+                            <Reply className="h-4 w-4 mr-2" />
+                            Reply
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-white hover:bg-gray-700">
+                            <Copy className="h-4 w-4 mr-2" />
+                            Copy Text
+                          </DropdownMenuItem>
+                          {message.authorId === currentUser?.id && (
+                            <DropdownMenuItem
+                              className="text-red-400 hover:bg-red-900"
+                              onClick={() => deleteMessage(message.id)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </ScrollArea>
+        )}
+
+        {/* Message Input - Hidden for Admin Console */}
+        {!isAdminChannel && (
+          <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white"
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+
+              <div className="flex-1 relative">
+                <Input
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder={`Message #${currentChannel?.name || "channel"}`}
+                  className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 pr-20"
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                />
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                  >
+                    <Smile className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <Button
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim()}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
-          )}
-        </ScrollArea>
 
-        {/* Message Input */}
-        <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-gray-400 hover:text-white"
-            >
-              <Paperclip className="h-4 w-4" />
-            </Button>
-
-            <div className="flex-1 relative">
-              <Input
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={
-                  isAdminChannel
-                    ? "Execute admin command..."
-                    : `Message #${currentChannel?.name || "channel"}`
-                }
-                className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 pr-20"
-                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-              />
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-gray-400 hover:text-white"
-                >
-                  <Smile className="h-4 w-4" />
-                </Button>
+            <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+              <div className="flex items-center space-x-4">
+                <span>🔒 End-to-end encrypted</span>
+                <span>🔥 Messages disappear in 35s</span>
+                <span>📝 {newMessage.length}/2000</span>
               </div>
             </div>
-
-            <Button
-              onClick={handleSendMessage}
-              disabled={!newMessage.trim()}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
           </div>
-
-          <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
-            <div className="flex items-center space-x-4">
-              <span>🔒 End-to-end encrypted</span>
-              <span>🔥 Messages disappear in 35s</span>
-              <span>📝 {newMessage.length}/2000</span>
-            </div>
-            {isAdminChannel && (
-              <span className="text-yellow-400">👑 Admin Console Active</span>
-            )}
-          </div>
-        </div>
+        )}
       </div>
+
+      {/* Profile Modal */}
+      {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
     </div>
   );
 };
