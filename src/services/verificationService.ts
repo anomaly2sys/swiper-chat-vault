@@ -201,21 +201,7 @@ class VerificationService {
     // Mock implementation - in production, use nodemailer
     console.log("[EMAIL SERVICE] Sending to: " + email);
     console.log(
-      "[EMAIL CONTENT]\n" +
-        "To: " +
-        email +
-        "\n" +
-        "Subject: SwiperEmpire Verification Code\n\n" +
-        "Dear " +
-        username +
-        ",\n\n" +
-        "Your verification code for SwiperEmpire is: " +
-        code +
-        "\n\n" +
-        "This code will expire in 10 minutes.\n\n" +
-        "If you did not request this code, please ignore this email.\n\n" +
-        "Best regards,\n" +
-        "SwiperEmpire Team",
+      "[EMAIL CONTENT] Email sent to: " + email + " with code: " + code,
     );
 
     // Simulate email sending delay
