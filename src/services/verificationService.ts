@@ -242,23 +242,7 @@ class VerificationService {
     // Simulate SMS sending delay
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // In production, you would use Twilio:
-    /*
-    const twilio = require('twilio');
-    const client = twilio(this.twilioConfig.accountSid, this.twilioConfig.authToken);
-
-    try {
-      const message = await client.messages.create({
-        body: 'SwiperEmpire: Your verification code is ' + code + '. Expires in 10 minutes.',
-        from: this.twilioConfig.fromNumber,
-        to: phone
-      });
-      return !!message.sid;
-    } catch (error) {
-      console.error('Twilio SMS error:', error);
-      return false;
-    }
-    */
+    // In production, you would use Twilio SMS service
 
     return true; // Mock success
   }
