@@ -7,7 +7,7 @@ const Index = () => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <MainChatApp />;
+    return <EnhancedMainApp />;
   }
 
   return <EnhancedAuthForm onSuccess={() => {}} />;
