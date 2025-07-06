@@ -926,7 +926,7 @@ Use /servers info <name> for detailed information.`;
 
   const addBotMessage = (content: string, type: BotMessage["type"]) => {
     const newMessage: BotMessage = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       content,
       timestamp: new Date(),
       type,
