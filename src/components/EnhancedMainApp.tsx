@@ -73,7 +73,11 @@ const EnhancedMainApp: React.FC = () => {
 
             {/* User Actions */}
             <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                onClick={() => setShowProfile(true)}
+                className="flex items-center space-x-2 hover:bg-white/10 p-2 rounded-lg transition-colors"
+              >
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">
                     {currentUser?.username.charAt(0).toUpperCase()}
@@ -85,7 +89,7 @@ const EnhancedMainApp: React.FC = () => {
                 {currentUser?.isAdmin && (
                   <Crown className="h-4 w-4 text-yellow-400" />
                 )}
-              </div>
+              </Button>
 
               <Button
                 variant="ghost"
