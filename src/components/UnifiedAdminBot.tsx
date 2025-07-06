@@ -199,7 +199,7 @@ const UnifiedAdminBot: React.FC = () => {
 • Database Health: **100%** ✅
 
 **💰 Commerce:**
-• Bitcoin Transactions: **₿${(Math.random() * 5).toFixed(4)}**
+��� Bitcoin Transactions: **₿${(Math.random() * 5).toFixed(4)}**
 • Active Products: **${Math.floor(Math.random() * 100) + 50}**
 • Pending Tickets: **${Math.floor(Math.random() * 10)}**`,
           data: fakeStats,
@@ -503,12 +503,9 @@ Type \`/help\` to see all available commands.
                       {message.type}
                     </Badge>
                   </div>
-                  <div
-                    className="text-white prose prose-invert max-w-none text-sm leading-relaxed"
-                    dangerouslySetInnerHTML={{
-                      __html: formatMessageContent(message.content),
-                    }}
-                  />
+                  <div className="text-white max-w-none text-sm leading-relaxed whitespace-pre-line">
+                    {formatMessageContent(message.content)}
+                  </div>
                   {message.data && (
                     <div className="mt-2 p-3 bg-gray-800/50 rounded border border-gray-700">
                       <pre className="text-xs text-gray-300 overflow-x-auto">
