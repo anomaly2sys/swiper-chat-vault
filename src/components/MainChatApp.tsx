@@ -442,7 +442,7 @@ const MainChatApp: React.FC = () => {
 
           {/* Messages / Admin Bot */}
           {isAdminChannel ? (
-            <EnhancedAdminBot onCommand={executeAdminCommand} />
+            <UnifiedAdminBot />
           ) : (
             <ScrollArea className="flex-1 p-4">
               {(selectedDM
