@@ -318,7 +318,7 @@ SwiperEmpire Team`);
       "        <ul>",
       "            <li>This code expires in 10 minutes</li>",
       "            <li>You have 3 attempts to enter the correct code</li>",
-      "            <li>If you didn't request this, please ignore this email</li>",
+      "            <li>If you did not request this, please ignore this email</li>",
       "        </ul>",
       "        ",
       "        <p>Thank you for joining our secure messaging platform!</p>",
