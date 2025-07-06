@@ -47,11 +47,17 @@ const MessageControls: React.FC<MessageControlsProps> = ({
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveRequested, setSaveRequested] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+  const [localDisappearing, setLocalDisappearing] = useState(isDisappearing);
   const { toast } = useToast();
+
+  // Sync local state with prop
+  useEffect(() => {
+    setLocalDisappearing(isDisappearing);
+  }, [isDisappearing]);
 
   // Calculate time remaining for disappearing messages
   useEffect(() => {
-    if (isDisappearing && disappearAt) {
+    if (localDisappearing && disappearAt) {
       const updateTimer = () => {
         const now = new Date().getTime();
         const disappearTime = disappearAt.getTime();
@@ -67,8 +73,10 @@ const MessageControls: React.FC<MessageControlsProps> = ({
       updateTimer();
       const interval = setInterval(updateTimer, 1000);
       return () => clearInterval(interval);
+    } else {
+      setTimeRemaining(null);
     }
-  }, [isDisappearing, disappearAt]);
+  }, [localDisappearing, disappearAt]);
 
   const formatTimeRemaining = (ms: number): string => {
     const seconds = Math.floor(ms / 1000);
@@ -89,14 +97,9 @@ const MessageControls: React.FC<MessageControlsProps> = ({
   };
 
   const handleToggleDisappearing = () => {
-    const newState = !isDisappearing;
+    const newState = !localDisappearing;
+    setLocalDisappearing(newState);
     onToggleDisappearing(messageId, newState);
-    toast({
-      title: newState ? "Auto-delete enabled" : "Auto-delete disabled",
-      description: newState
-        ? "Message will disappear in 35 seconds"
-        : "Message will not auto-delete",
-    });
   };
 
   const handleRequestSave = () => {
@@ -126,10 +129,10 @@ const MessageControls: React.FC<MessageControlsProps> = ({
     <>
       <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
         {/* Time remaining indicator */}
-        {isDisappearing && timeRemaining !== null && (
+        {localDisappearing && timeRemaining !== null && (
           <Badge
             variant="secondary"
-            className="bg-red-500/20 text-red-300 text-xs flex items-center"
+            className="bg-red-500/20 text-red-300 text-xs flex items-center animate-pulse"
           >
             <Timer className="h-3 w-3 mr-1" />
             {formatTimeRemaining(timeRemaining)}
@@ -141,18 +144,36 @@ const MessageControls: React.FC<MessageControlsProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 text-gray-400 hover:text-white"
+            className={`h-6 w-6 p-0 transition-colors ${
+              localDisappearing
+                ? "text-purple-400 hover:text-purple-300"
+                : "text-gray-400 hover:text-white"
+            }`}
             onClick={handleToggleDisappearing}
             title={
-              isDisappearing ? "Disable auto-delete" : "Enable auto-delete"
+              localDisappearing ? "Disable auto-delete" : "Enable auto-delete"
             }
           >
-            {isDisappearing ? (
-              <ToggleRight className="h-4 w-4 text-purple-400" />
+            {localDisappearing ? (
+              <ToggleRight className="h-4 w-4" />
             ) : (
               <ToggleLeft className="h-4 w-4" />
             )}
           </Button>
+        )}
+
+        {/* Status indicator */}
+        {isOwn && (
+          <Badge
+            variant="secondary"
+            className={`text-xs ${
+              localDisappearing
+                ? "bg-purple-500/20 text-purple-300"
+                : "bg-gray-500/20 text-gray-300"
+            }`}
+          >
+            {localDisappearing ? "Auto-delete" : "Permanent"}
+          </Badge>
         )}
 
         {/* Save message (only in DMs and if not own message) */}
@@ -186,7 +207,7 @@ const MessageControls: React.FC<MessageControlsProps> = ({
             size="sm"
             className="h-6 w-6 p-0 text-gray-400 hover:text-red-400"
             onClick={handleSelfDelete}
-            title="Delete message"
+            title="Delete message now"
           >
             <Trash2 className="h-3 w-3" />
           </Button>
