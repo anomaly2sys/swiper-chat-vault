@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, Lock, Eye, AlertTriangle } from 'lucide-react';
+import { Shield, Lock, Eye, AlertTriangle, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface SecurityIndicatorProps {
@@ -13,42 +13,42 @@ const SecurityIndicator: React.FC<SecurityIndicatorProps> = ({
   encryptionLevel = 'high' 
 }) => {
   const getSecurityColor = () => {
-    if (!isSecure) return 'text-red-400';
+    if (!isSecure) return 'text-red-400 border-red-400/30 bg-red-500/10';
     switch (encryptionLevel) {
-      case 'high': return 'text-green-400';
-      case 'medium': return 'text-yellow-400';
-      case 'low': return 'text-orange-400';
-      default: return 'text-green-400';
+      case 'high': return 'text-green-400 border-green-400/30 bg-green-500/10';
+      case 'medium': return 'text-yellow-400 border-yellow-400/30 bg-yellow-500/10';
+      case 'low': return 'text-orange-400 border-orange-400/30 bg-orange-500/10';
+      default: return 'text-green-400 border-green-400/30 bg-green-500/10';
     }
   };
 
   const getSecurityIcon = () => {
     if (!isSecure) return <AlertTriangle className="h-4 w-4" />;
     switch (encryptionLevel) {
-      case 'high': return <Shield className="h-4 w-4" />;
+      case 'high': return <Zap className="h-4 w-4" />;
       case 'medium': return <Lock className="h-4 w-4" />;
       case 'low': return <Eye className="h-4 w-4" />;
-      default: return <Shield className="h-4 w-4" />;
+      default: return <Zap className="h-4 w-4" />;
     }
   };
 
   const getSecurityText = () => {
-    if (!isSecure) return 'Insecure';
+    if (!isSecure) return 'Compromised';
     switch (encryptionLevel) {
-      case 'high': return 'Military Grade';
+      case 'high': return 'Quantum-Safe';
       case 'medium': return 'Standard';
       case 'low': return 'Basic';
-      default: return 'Military Grade';
+      default: return 'Quantum-Safe';
     }
   };
 
   return (
     <Badge 
       variant="secondary" 
-      className={`${getSecurityColor()} bg-black/20 border-current/30 flex items-center space-x-1`}
+      className={`${getSecurityColor()} flex items-center space-x-1 transition-all hover:scale-105`}
     >
       {getSecurityIcon()}
-      <span className="text-xs">{getSecurityText()}</span>
+      <span className="text-xs font-medium">{getSecurityText()}</span>
     </Badge>
   );
 };
