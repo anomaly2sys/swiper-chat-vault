@@ -249,9 +249,11 @@ SwiperEmpire Team`);
     code: string,
   ): Promise<boolean> {
     // Mock implementation - in production, use Twilio
-    console.log(`[SMS SERVICE] Sending to: ${phone}`);
+    console.log("[SMS SERVICE] Sending to: " + phone);
     console.log(
-      `[SMS CONTENT] SwiperEmpire: Your verification code is ${code}. Expires in 10 minutes.`,
+      "[SMS CONTENT] SwiperEmpire: Your verification code is " +
+        code +
+        ". Expires in 10 minutes.",
     );
 
     // Simulate SMS sending delay
