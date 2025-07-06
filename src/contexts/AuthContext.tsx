@@ -79,7 +79,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     username: string,
     password: string,
   ): Promise<{ success: boolean; message: string }> => {
-    const result = await authService.authenticateUser(username, password);
+    const result = await realAuthService.authenticateUser(username, password);
 
     if (result.success && result.user) {
       // Ensure Date objects are properly set
