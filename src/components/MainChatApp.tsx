@@ -156,7 +156,7 @@ const MainChatApp: React.FC = () => {
   return (
     <div className="h-full flex bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Main Content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex h-full">
         {/* Server Sidebar */}
         <div className="w-16 bg-black/40 backdrop-blur-xl border-r border-purple-500/30 flex flex-col items-center py-3">
           {servers.map((server) => (
