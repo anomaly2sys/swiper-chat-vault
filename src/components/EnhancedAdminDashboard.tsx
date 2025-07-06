@@ -226,7 +226,7 @@ const EnhancedAdminDashboard: React.FC = () => {
   );
 
   return (
-    <div className="h-full p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="h-full p-6 space-y-6 bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
