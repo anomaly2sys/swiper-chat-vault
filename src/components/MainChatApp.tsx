@@ -421,20 +421,46 @@ const MainChatApp: React.FC = () => {
                     className="flex items-start space-x-3 group"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-purple-600 text-white">
-                        {message.authorId === currentUser?.id
-                          ? currentUser.username.charAt(0).toUpperCase()
-                          : "U"}
+                      <AvatarFallback
+                        className={
+                          message.authorId === "system"
+                            ? "bg-gradient-to-r from-green-600 to-blue-600 text-white"
+                            : message.authorId === currentUser?.id
+                              ? "bg-purple-600 text-white"
+                              : "bg-gray-600 text-white"
+                        }
+                      >
+                        {message.authorId === "system"
+                          ? "🏰"
+                          : message.authorId === currentUser?.id
+                            ? currentUser.username.charAt(0).toUpperCase()
+                            : "U"}
                       </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
-                        <span className="font-medium text-white">
-                          {message.authorId === currentUser?.id
-                            ? currentUser.displayName
-                            : "User"}
+                        <span
+                          className={`font-medium ${
+                            message.authorId === "system"
+                              ? "text-green-400"
+                              : "text-white"
+                          }`}
+                        >
+                          {message.authorId === "system"
+                            ? "SwiperEmpire System"
+                            : message.authorId === currentUser?.id
+                              ? currentUser.displayName
+                              : "User"}
                         </span>
+                        {message.authorId === "system" && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-500/20 text-green-300 text-xs"
+                          >
+                            SYSTEM
+                          </Badge>
+                        )}
                         <span className="text-xs text-gray-400">
                           {message.timestamp.toLocaleTimeString()}
                         </span>
@@ -447,7 +473,15 @@ const MainChatApp: React.FC = () => {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-gray-300">{message.content}</p>
+                      <p
+                        className={`${
+                          message.authorId === "system"
+                            ? "text-green-300"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        {message.content}
+                      </p>
                     </div>
 
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
