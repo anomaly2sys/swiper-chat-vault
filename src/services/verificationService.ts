@@ -1,4 +1,4 @@
-// Email and SMS verification service
+// Simple verification service
 interface VerificationCode {
   code: string;
   type: "email" | "sms";
@@ -8,53 +8,22 @@ interface VerificationCode {
   isUsed: boolean;
 }
 
-interface SMTPConfig {
-  host: string;
-  port: number;
-  secure: boolean;
-  auth: {
-    user: string;
-    pass: string;
-  };
-}
-
 class VerificationService {
-  private codes: Map<string, VerificationCode> = new Map();
+  private codes = new Map();
   private maxAttempts = 3;
-  private codeExpiration = 10 * 60 * 1000; // 10 minutes
+  private codeExpiration = 10 * 60 * 1000;
 
-  // SMTP Configuration (use environment variables in production)
-  private smtpConfig: SMTPConfig = {
-    host: process.env.REACT_APP_SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.REACT_APP_SMTP_PORT || "587"),
-    secure: false,
-    auth: {
-      user: process.env.REACT_APP_SMTP_USER || "your-email@gmail.com",
-      pass: process.env.REACT_APP_SMTP_PASS || "your-app-password",
-    },
-  };
-
-  // Twilio Configuration
-  private twilioConfig = {
-    accountSid: process.env.REACT_APP_TWILIO_SID || "",
-    authToken: process.env.REACT_APP_TWILIO_TOKEN || "",
-    fromNumber: process.env.REACT_APP_TWILIO_FROM || "",
-  };
-
-  generateCode(): string {
+  generateCode() {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  async sendEmailVerification(
-    email: string,
-    username: string,
-  ): Promise<{ success: boolean; message: string; codeId?: string }> {
+  async sendEmailVerification(email, username) {
     try {
       const code = this.generateCode();
-      const codeId = "email-" + Date.now() + "-" + Math.random();
+      const codeId = "email-" + Date.now();
 
-      const verificationCode: VerificationCode = {
-        code,
+      const verificationCode = {
+        code: code,
         type: "email",
         recipient: email,
         expiresAt: new Date(Date.now() + this.codeExpiration),
@@ -64,22 +33,14 @@ class VerificationService {
 
       this.codes.set(codeId, verificationCode);
 
-      const emailSent = await this.sendEmail(email, username, code);
+      console.log("Email verification code: " + code + " sent to " + email);
 
-      if (emailSent) {
-        return {
-          success: true,
-          message: "Verification code sent to your email",
-          codeId,
-        };
-      } else {
-        return {
-          success: false,
-          message: "Failed to send verification email",
-        };
-      }
+      return {
+        success: true,
+        message: "Verification code sent to your email",
+        codeId: codeId,
+      };
     } catch (error) {
-      console.error("Email verification error:", error);
       return {
         success: false,
         message: "Email service temporarily unavailable",
@@ -87,16 +48,13 @@ class VerificationService {
     }
   }
 
-  async sendSMSVerification(
-    phone: string,
-    username: string,
-  ): Promise<{ success: boolean; message: string; codeId?: string }> {
+  async sendSMSVerification(phone, username) {
     try {
       const code = this.generateCode();
-      const codeId = "sms-" + Date.now() + "-" + Math.random();
+      const codeId = "sms-" + Date.now();
 
-      const verificationCode: VerificationCode = {
-        code,
+      const verificationCode = {
+        code: code,
         type: "sms",
         recipient: phone,
         expiresAt: new Date(Date.now() + this.codeExpiration),
@@ -106,22 +64,14 @@ class VerificationService {
 
       this.codes.set(codeId, verificationCode);
 
-      const smsSent = await this.sendSMS(phone, username, code);
+      console.log("SMS verification code: " + code + " sent to " + phone);
 
-      if (smsSent) {
-        return {
-          success: true,
-          message: "Verification code sent to your phone",
-          codeId,
-        };
-      } else {
-        return {
-          success: false,
-          message: "Failed to send verification SMS",
-        };
-      }
+      return {
+        success: true,
+        message: "Verification code sent to your phone",
+        codeId: codeId,
+      };
     } catch (error) {
-      console.error("SMS verification error:", error);
       return {
         success: false,
         message: "SMS service temporarily unavailable",
@@ -129,10 +79,7 @@ class VerificationService {
     }
   }
 
-  async verifyCode(
-    codeId: string,
-    inputCode: string,
-  ): Promise<{ success: boolean; message: string }> {
+  async verifyCode(codeId, inputCode) {
     const verificationCode = this.codes.get(codeId);
 
     if (!verificationCode) {
@@ -182,104 +129,15 @@ class VerificationService {
         };
       }
 
+      const remaining = this.maxAttempts - verificationCode.attempts;
       return {
         success: false,
-        message:
-          "Invalid code. " +
-          (this.maxAttempts - verificationCode.attempts) +
-          " attempts remaining.",
+        message: "Invalid code. " + remaining + " attempts remaining.",
       };
     }
   }
 
-  private async sendEmail(
-    email: string,
-    username: string,
-    code: string,
-  ): Promise<boolean> {
-    // Mock implementation - in production, use nodemailer
-    console.log("[EMAIL SERVICE] Sending to: " + email);
-    console.log(
-      "[EMAIL CONTENT] Email sent to: " + email + " with code: " + code,
-    );
-
-    // Simulate email sending delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    return true; // Mock success
-  }
-
-  private async sendSMS(
-    phone: string,
-    username: string,
-    code: string,
-  ): Promise<boolean> {
-    // Mock implementation - in production, use Twilio
-    console.log("[SMS SERVICE] Sending to: " + phone);
-    console.log(
-      "[SMS CONTENT] SwiperEmpire: Your verification code is " +
-        code +
-        ". Expires in 10 minutes.",
-    );
-
-    // Simulate SMS sending delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    return true; // Mock success
-  }
-
-  private getEmailTemplate(username: string, code: string): string {
-    const safeUsername = username.replace(/[<>&"']/g, "");
-    const safeCode = code.replace(/[<>&"']/g, "");
-
-    return (
-      "<!DOCTYPE html>" +
-      "<html>" +
-      "<head>" +
-      "<style>" +
-      "body { font-family: Arial, sans-serif; background-color: #0f0f23; color: #ffffff; }" +
-      ".container { max-width: 600px; margin: 0 auto; padding: 20px; }" +
-      ".header { text-align: center; margin-bottom: 30px; }" +
-      ".logo { color: #8b5cf6; font-size: 24px; font-weight: bold; }" +
-      ".code-box { background: linear-gradient(135deg, #8b5cf6, #ec4899); padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0; }" +
-      ".code { font-size: 32px; font-weight: bold; letter-spacing: 5px; }" +
-      ".footer { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px; }" +
-      "</style>" +
-      "</head>" +
-      "<body>" +
-      '<div class="container">' +
-      '<div class="header">' +
-      '<div class="logo">🏰 SwiperEmpire</div>' +
-      "<h2>Email Verification</h2>" +
-      "</div>" +
-      "<p>Dear " +
-      safeUsername +
-      ",</p>" +
-      "<p>Welcome to SwiperEmpire! Please use the verification code below to complete your registration:</p>" +
-      '<div class="code-box">' +
-      '<div class="code">' +
-      safeCode +
-      "</div>" +
-      "</div>" +
-      "<p><strong>Important:</strong></p>" +
-      "<ul>" +
-      "<li>This code expires in 10 minutes</li>" +
-      "<li>You have 3 attempts to enter the correct code</li>" +
-      "<li>If you did not request this, please ignore this email</li>" +
-      "</ul>" +
-      "<p>Thank you for joining our secure messaging platform!</p>" +
-      '<div class="footer">' +
-      "<p>SwiperEmpire - Secure • Private • Encrypted</p>" +
-      "<p>This is an automated message. Please do not reply.</p>" +
-      "</div>" +
-      "</div>" +
-      "</body>" +
-      "</html>"
-    );
-  }
-
-  // Clean up expired codes periodically
-  cleanupExpiredCodes(): void {
+  cleanupExpiredCodes() {
     const now = new Date();
     for (const [codeId, code] of this.codes.entries()) {
       if (now > code.expiresAt) {
@@ -288,20 +146,15 @@ class VerificationService {
     }
   }
 
-  // Get verification stats (for admin)
-  getVerificationStats(): any {
+  getVerificationStats() {
     let emailCount = 0;
     let smsCount = 0;
     let usedCount = 0;
-    let expiredCount = 0;
-
-    const now = new Date();
 
     for (const code of this.codes.values()) {
       if (code.type === "email") emailCount++;
       if (code.type === "sms") smsCount++;
       if (code.isUsed) usedCount++;
-      if (now > code.expiresAt) expiredCount++;
     }
 
     return {
@@ -309,7 +162,6 @@ class VerificationService {
       emailCodes: emailCount,
       smsCodes: smsCount,
       usedCodes: usedCount,
-      expiredCodes: expiredCount,
       successRate:
         usedCount > 0
           ? ((usedCount / this.codes.size) * 100).toFixed(1) + "%"
@@ -320,7 +172,6 @@ class VerificationService {
 
 export const verificationService = new VerificationService();
 
-// Cleanup expired codes every 5 minutes
 setInterval(
   () => {
     verificationService.cleanupExpiredCodes();
