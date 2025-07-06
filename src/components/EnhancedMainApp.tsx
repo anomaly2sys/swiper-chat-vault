@@ -40,7 +40,7 @@ const EnhancedMainApp: React.FC = () => {
 
             {/* Center Welcome Message */}
             <div className="flex-1 flex justify-center">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+              <h1 className="text-sm font-medium bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
                 Welcome to Swiper Empire Messager
               </h1>
             </div>
