@@ -36,7 +36,7 @@ export default async function handler(event) {
 
       const logs = await sql(
         `
-        SELECT al.*, u.username, u.display_name 
+        SELECT al.*, u.username, u.display_name
         FROM audit_logs al
         LEFT JOIN users u ON al.user_id = u.id
         ORDER BY al.created_at DESC
@@ -99,7 +99,7 @@ export default async function handler(event) {
         switch (command) {
           case "help":
             response = `🤖 **ADMIN BOT COMMANDS**
-            
+
 **User Management:**
 • \`/users\` - List all users
 • \`/user [username]\` - Get user details
@@ -166,7 +166,7 @@ export default async function handler(event) {
               const user = userDetails[0];
               responseData = user;
               response = `👤 **USER DETAILS**
-              
+
 **Username:** @${user.username}
 **Display Name:** ${user.display_name}
 **Status:** ${user.status}
@@ -227,7 +227,7 @@ export default async function handler(event) {
             };
 
             response = `📊 **SYSTEM STATISTICS**
-            
+
 **Total Users:** ${responseData.totalUsers}
 **Active Users:** ${responseData.activeUsers}
 **Total Messages:** ${responseData.totalMessages}
@@ -238,8 +238,8 @@ export default async function handler(event) {
 
           case "tables":
             const tables = await sql(`
-              SELECT table_name 
-              FROM information_schema.tables 
+              SELECT table_name
+              FROM information_schema.tables
               WHERE table_schema = 'public'
               ORDER BY table_name
             `);
@@ -286,8 +286,8 @@ export default async function handler(event) {
     // GET /admin/database/tables - Get database tables
     if (event.httpMethod === "GET" && pathSegments.includes("tables")) {
       const tables = await sql(`
-        SELECT table_name 
-        FROM information_schema.tables 
+        SELECT table_name
+        FROM information_schema.tables
         WHERE table_schema = 'public'
         ORDER BY table_name
       `);
@@ -347,5 +347,5 @@ export default async function handler(event) {
 }
 
 export const config = {
-  path: "/admin/*",
+  path: ["/admin/*", "/admin/bot-command"],
 };
