@@ -29,7 +29,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn, onDelete 
   useEffect(() => {
     if (message.isDisappearing) {
       const startTime = Date.now();
-      const endTime = message.timestamp.getTime() + 10000;
+      const endTime = message.timestamp.getTime() + 35000; // Changed to 35 seconds
       
       const timer = setInterval(() => {
         const remaining = Math.max(0, endTime - Date.now());
@@ -76,11 +76,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn, onDelete 
               <div className="flex items-center space-x-2">
                 <span>{formatTime(message.timestamp)}</span>
                 {message.isEncrypted && (
-                  <Lock className="h-3 w-3 text-green-400" title="End-to-end encrypted" />
+                  <div title="End-to-end encrypted">
+                    <Lock className="h-3 w-3 text-green-400" />
+                  </div>
                 )}
                 {message.isDisappearing && (
                   <div className="flex items-center space-x-1">
-                    <EyeOff className="h-3 w-3 text-purple-300" title="Disappearing message" />
+                    <div title="Disappearing message">
+                      <EyeOff className="h-3 w-3 text-purple-300" />
+                    </div>
                     {timeLeft !== null && timeLeft > 0 && (
                       <span className={`text-purple-300 ${timeLeft <= 3 ? 'text-red-300 font-bold' : ''}`}>
                         {timeLeft}s
@@ -89,7 +93,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn, onDelete 
                   </div>
                 )}
                 {message.requiresMutualConsent && (
-                  <Shield className="h-3 w-3 text-blue-400" title="Requires mutual consent to save" />
+                  <div title="Requires mutual consent to save">
+                    <Shield className="h-3 w-3 text-blue-400" />
+                  </div>
                 )}
               </div>
               <MessageStatus status={message.status} isOwn={isOwn} />
