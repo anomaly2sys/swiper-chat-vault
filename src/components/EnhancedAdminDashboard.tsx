@@ -240,13 +240,6 @@ const EnhancedAdminDashboard: React.FC = () => {
         </div>
         <div className="flex space-x-2">
           <Button
-            onClick={() => setShowBotConsole(true)}
-            className="bg-purple-600 hover:bg-purple-700 transition-colors"
-          >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Bot Console
-          </Button>
-          <Button
             onClick={loadDashboardData}
             variant="outline"
             className="border-gray-600 hover:bg-gray-700 transition-colors"
