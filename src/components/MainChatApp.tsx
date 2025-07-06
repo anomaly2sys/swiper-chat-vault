@@ -52,7 +52,7 @@ import ServerManager from "./ServerManager";
 import UserContextMenu from "./UserContextMenu";
 import MessageControls from "./MessageControls";
 import RoleBadge from "./RoleBadge";
-import NavigationBar from "./NavigationBar";
+
 import { useNavigate } from "react-router-dom";
 
 const MainChatApp: React.FC = () => {
