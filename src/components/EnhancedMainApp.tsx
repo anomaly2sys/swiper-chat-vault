@@ -32,14 +32,21 @@ const EnhancedMainApp: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SE</span>
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-purple-800 rounded-full flex items-center justify-center">
+                <MessageSquare className="h-6 w-6 text-white" />
               </div>
-              <span className="text-lg font-bold text-white">SwiperEmpire</span>
+              <span className="text-xl font-bold text-white">SwiperEmpire</span>
+            </div>
+
+            {/* Center Welcome Message */}
+            <div className="flex-1 flex justify-center">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                Welcome to Swiper Empire Messager
+              </h1>
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mr-4">
               <Button
                 variant={currentView === "chat" ? "default" : "ghost"}
                 size="sm"
@@ -61,7 +68,7 @@ const EnhancedMainApp: React.FC = () => {
                   onClick={() => switchView("admin")}
                   className={`transition-all duration-200 ${
                     currentView === "admin"
-                      ? "bg-yellow-600 hover:bg-yellow-700 shadow-lg shadow-yellow-500/25"
+                      ? "bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/25"
                       : "text-gray-300 hover:text-white hover:bg-white/10"
                   }`}
                 >
@@ -78,7 +85,7 @@ const EnhancedMainApp: React.FC = () => {
                 onClick={() => setShowProfile(true)}
                 className="flex items-center space-x-2 hover:bg-white/10 p-2 rounded-lg transition-colors"
               >
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-purple-800 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">
                     {currentUser?.username.charAt(0).toUpperCase()}
                   </span>
