@@ -171,20 +171,8 @@ class RealAuthService {
     // Local authentication for testing
     const validCredentials = [
       {
-        username: "admin",
-        password: "admin",
-        isAdmin: true,
-        displayName: "System Administrator",
-      },
-      {
         username: "blankbank",
         password: "TheRomanDoctor213*",
-        isAdmin: true,
-        displayName: "BlankBank",
-      },
-      {
-        username: "blankbank",
-        password: "admin",
         isAdmin: true,
         displayName: "BlankBank",
       },
