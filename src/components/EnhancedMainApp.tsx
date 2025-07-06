@@ -17,6 +17,7 @@ type ViewType = "chat" | "admin";
 
 const EnhancedMainApp: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>("chat");
+  const [showProfile, setShowProfile] = useState(false);
   const { currentUser, logout } = useAuth();
 
   const switchView = (view: ViewType) => {
