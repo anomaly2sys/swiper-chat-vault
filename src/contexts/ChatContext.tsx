@@ -267,7 +267,20 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     createdAt: new Date("2024-01-01"),
   };
 
-  const [servers, setServers] = useState<Server[]>([defaultServer]);
+  const [servers, setServers] = useState<Server[]>(() => {
+    const savedServers = localStorage.getItem("swiperEmpire_servers");
+    if (savedServers) {
+      try {
+        return JSON.parse(savedServers).map((server: any) => ({
+          ...server,
+          createdAt: new Date(server.createdAt),
+        }));
+      } catch {
+        return [defaultServer];
+      }
+    }
+    return [defaultServer];
+  });
   const [currentServer, setCurrentServer] = useState<Server | null>(
     defaultServer,
   );
