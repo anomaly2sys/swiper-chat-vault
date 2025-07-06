@@ -102,6 +102,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const result = await authService.registerUser(userData);
 
     if (result.success && result.user) {
+      // Ensure Date objects are properly set
+      if (result.user.joinedAt && typeof result.user.joinedAt === "string") {
+        result.user.joinedAt = new Date(result.user.joinedAt);
+      }
+      if (result.user.lastSeen && typeof result.user.lastSeen === "string") {
+        result.user.lastSeen = new Date(result.user.lastSeen);
+      }
       setCurrentUser(result.user);
       localStorage.setItem("currentUser", JSON.stringify(result.user));
     }
