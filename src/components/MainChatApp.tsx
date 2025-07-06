@@ -154,7 +154,7 @@ const MainChatApp: React.FC = () => {
   }
 
   return (
-    <div className="h-full flex bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="h-full flex bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
       {/* Main Content */}
       <div className="flex-1 flex h-full">
         {/* Server Sidebar */}
