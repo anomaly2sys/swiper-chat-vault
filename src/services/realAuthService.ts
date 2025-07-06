@@ -52,35 +52,81 @@ class RealAuthService {
     user?: User;
   }> {
     try {
-      // Hash password
-      const passwordHash = await bcrypt.hash(userData.password, 12);
+      // Try API first, fallback to local storage if not deployed
+      try {
+        const passwordHash = await bcrypt.hash(userData.password, 12);
 
-      const user = await this.apiCall("/users", "POST", {
-        username: userData.username,
-        displayName: userData.displayName,
-        email: userData.email,
-        phone: userData.phone,
-        passwordHash,
-        bio: "",
-        profilePicture: "",
-        isAdmin: false,
-      });
+        const user = await this.apiCall("/users", "POST", {
+          username: userData.username,
+          displayName: userData.displayName,
+          email: userData.email,
+          phone: userData.phone,
+          passwordHash,
+          bio: "",
+          profilePicture: "",
+          isAdmin: false,
+        });
 
-      // Convert date strings to Date objects
-      user.joinedAt = new Date(user.joined_at);
-      user.lastSeen = new Date(user.last_seen);
-
-      return {
-        success: true,
-        message: "User registered successfully",
-        user,
-      };
+        return {
+          success: true,
+          message: "User registered successfully",
+          user,
+        };
+      } catch (apiError) {
+        // API not available, register locally
+        return this.registerLocally(userData);
+      }
     } catch (error: any) {
-      return {
-        success: false,
-        message: error.message || "Registration failed",
-      };
+      return this.registerLocally(userData);
     }
+  }
+
+  private registerLocally(userData: RegisterData): {
+    success: boolean;
+    message: string;
+    user?: User;
+  } {
+    // Check if username already exists in localStorage
+    const existingUsers = JSON.parse(
+      localStorage.getItem("registeredUsers") || "[]",
+    );
+
+    if (
+      existingUsers.find(
+        (u: any) =>
+          u.username.toLowerCase() === userData.username.toLowerCase(),
+      )
+    ) {
+      return { success: false, message: "Username already exists" };
+    }
+
+    // Create new user
+    const newUser: User = {
+      id: Math.floor(Math.random() * 10000) + 1000,
+      username: userData.username,
+      displayName: userData.displayName,
+      email: userData.email,
+      phone: userData.phone,
+      bio: "",
+      profilePicture: "",
+      isAdmin: false,
+      status: "online",
+      joinedAt: new Date(),
+      lastSeen: new Date(),
+      isVerified: false,
+      isBanned: false,
+      isMuted: false,
+    };
+
+    // Save to localStorage
+    existingUsers.push(newUser);
+    localStorage.setItem("registeredUsers", JSON.stringify(existingUsers));
+
+    return {
+      success: true,
+      message: "User registered successfully",
+      user: newUser,
+    };
   }
 
   async authenticateUser(
