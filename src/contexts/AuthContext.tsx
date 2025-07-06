@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { authService } from "../services/authService";
+import { realAuthService } from "../services/realAuthService";
 
 export interface User {
   id: string;
