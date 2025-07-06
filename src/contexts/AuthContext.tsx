@@ -8,7 +8,7 @@ import React, {
 import { realAuthService } from "../services/realAuthService";
 
 export interface User {
-  id: string;
+  id: number;
   username: string;
   displayName: string;
   email?: string;
@@ -19,6 +19,10 @@ export interface User {
   joinedAt: Date;
   lastSeen: Date;
   status: "online" | "away" | "busy" | "offline";
+  isVerified: boolean;
+  isBanned: boolean;
+  isMuted: boolean;
+  mutedUntil?: Date;
 }
 
 export interface AuthContextType {
