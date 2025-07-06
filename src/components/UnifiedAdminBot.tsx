@@ -430,11 +430,13 @@ Type \`/help\` to see all available commands.
   };
 
   const formatMessageContent = (content: string) => {
-    // Basic markdown-like formatting
+    // Clean formatting without HTML injection
     return content
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/`(.*?)`/g, '<code class="bg-gray-800 px-1 rounded">$1</code>')
-      .replace(/\n/g, "<br>");
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .replace(/`(.*?)`/g, "$1")
+      .split("\n")
+      .map((line) => line.trim())
+      .join("\n");
   };
 
   return (
