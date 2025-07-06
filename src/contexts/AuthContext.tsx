@@ -153,7 +153,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const getAllUsers = (): User[] => {
-    return authService.getAllUsers();
+    return realAuthService.getAllUsers();
   };
 
   return (
