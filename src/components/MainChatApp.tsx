@@ -46,9 +46,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChat } from "@/contexts/ChatContext";
-import AdminBot from "./AdminBot";
+import EnhancedAdminBot from "./EnhancedAdminBot";
 import UserProfile from "./UserProfile";
 import ServerManager from "./ServerManager";
+import UserContextMenu from "./UserContextMenu";
+import MessageControls from "./MessageControls";
 
 const MainChatApp: React.FC = () => {
   const { currentUser, logout } = useAuth();
@@ -324,6 +326,15 @@ const MainChatApp: React.FC = () => {
                   <Settings className="h-4 w-4 mr-2" />
                   User Settings
                 </DropdownMenuItem>
+                {currentUser?.isAdmin && (
+                  <DropdownMenuItem
+                    className="text-yellow-300 hover:bg-yellow-900/20"
+                    onClick={() => window.open("/admin-dashboard", "_blank")}
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
+                    Admin Dashboard
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator className="bg-gray-600" />
                 <DropdownMenuItem
                   className="text-red-400 hover:bg-red-900"
@@ -408,7 +419,7 @@ const MainChatApp: React.FC = () => {
 
         {/* Messages / Admin Bot */}
         {isAdminChannel ? (
-          <AdminBot onCommand={executeAdminCommand} />
+          <EnhancedAdminBot onCommand={executeAdminCommand} />
         ) : (
           <ScrollArea className="flex-1 p-4">
             {(selectedDM
@@ -436,23 +447,32 @@ const MainChatApp: React.FC = () => {
                     key={message.id}
                     className="flex items-start space-x-3 group"
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback
-                        className={
-                          message.authorId === "system"
-                            ? "bg-gradient-to-r from-green-600 to-blue-600 text-white"
+                    <UserContextMenu
+                      username={
+                        message.authorId === currentUser?.id
+                          ? currentUser.username
+                          : "User"
+                      }
+                      isAdmin={message.authorId === "admin-1"}
+                    >
+                      <Avatar className="h-8 w-8 cursor-pointer">
+                        <AvatarFallback
+                          className={
+                            message.authorId === "system"
+                              ? "bg-gradient-to-r from-green-600 to-blue-600 text-white"
+                              : message.authorId === currentUser?.id
+                                ? "bg-purple-600 text-white"
+                                : "bg-gray-600 text-white"
+                          }
+                        >
+                          {message.authorId === "system"
+                            ? "🏰"
                             : message.authorId === currentUser?.id
-                              ? "bg-purple-600 text-white"
-                              : "bg-gray-600 text-white"
-                        }
-                      >
-                        {message.authorId === "system"
-                          ? "🏰"
-                          : message.authorId === currentUser?.id
-                            ? currentUser.username.charAt(0).toUpperCase()
-                            : "U"}
-                      </AvatarFallback>
-                    </Avatar>
+                              ? currentUser.username.charAt(0).toUpperCase()
+                              : "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                    </UserContextMenu>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
@@ -480,14 +500,6 @@ const MainChatApp: React.FC = () => {
                         <span className="text-xs text-gray-400">
                           {message.timestamp.toLocaleTimeString()}
                         </span>
-                        {message.isDisappearing && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-purple-500/20 text-purple-300 text-xs"
-                          >
-                            Disappearing in 35s
-                          </Badge>
-                        )}
                       </div>
                       <p
                         className={`${
@@ -500,38 +512,33 @@ const MainChatApp: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-48 bg-gray-800 border-gray-600">
-                          <DropdownMenuItem className="text-white hover:bg-gray-700">
-                            <Reply className="h-4 w-4 mr-2" />
-                            Reply
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-white hover:bg-gray-700">
-                            <Copy className="h-4 w-4 mr-2" />
-                            Copy Text
-                          </DropdownMenuItem>
-                          {message.authorId === currentUser?.id && (
-                            <DropdownMenuItem
-                              className="text-red-400 hover:bg-red-900"
-                              onClick={() => deleteMessage(message.id)}
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                    <MessageControls
+                      messageId={message.id}
+                      isOwn={message.authorId === currentUser?.id}
+                      isDisappearing={message.isDisappearing}
+                      disappearAt={message.disappearAt}
+                      onDelete={deleteMessage}
+                      onToggleDisappearing={(id, enabled) => {
+                        // Handle toggle disappearing
+                        toast({
+                          title: enabled
+                            ? "Auto-delete enabled"
+                            : "Auto-delete disabled",
+                          description: enabled
+                            ? "Message will disappear in 35 seconds"
+                            : "Message will not auto-delete",
+                        });
+                      }}
+                      onRequestSave={(id) => {
+                        // Handle save request
+                        toast({
+                          title: "Save request sent",
+                          description: "Waiting for the other user to approve",
+                        });
+                      }}
+                      recipientUsername={selectedDM ? "User" : undefined}
+                      isDirectMessage={!!selectedDM}
+                    />
                   </div>
                 ))}
                 <div ref={messagesEndRef} />
