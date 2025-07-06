@@ -269,7 +269,7 @@ class VerificationService {
 
     try {
       const message = await client.messages.create({
-        body: `SwiperEmpire: Your verification code is ${code}. Expires in 10 minutes.`,
+        body: 'SwiperEmpire: Your verification code is ' + code + '. Expires in 10 minutes.',
         from: this.twilioConfig.fromNumber,
         to: phone
       });
