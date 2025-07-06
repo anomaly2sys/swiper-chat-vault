@@ -224,11 +224,20 @@ class RealDatabaseService {
     response: string;
     data?: any;
   }> {
-    return this.apiCall("/admin/bot-command", "POST", {
-      command,
-      args,
-      userId,
-    });
+    try {
+      return await this.apiCall("/admin/bot-command", "POST", {
+        command,
+        args,
+        userId,
+      });
+    } catch (error: any) {
+      // Fallback response if API fails
+      return {
+        success: false,
+        response: `❌ Command failed: ${error.message}. Available commands: /help, /users, /stats, /tables, /online`,
+        data: null,
+      };
+    }
   }
 
   // Database Operations
