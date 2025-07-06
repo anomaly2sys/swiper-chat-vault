@@ -1,73 +1,45 @@
-# Welcome to your Lovable project
+# 🛰️ Swiper Chat
 
-## Project info
+**The most secure chatroom ever built. Military-grade encryption meets clean, modern design.**  
+A hybrid between Telegram and Discord — but truly private.
 
-**URL**: https://lovable.dev/projects/8ef8d7ef-071a-4028-9e5d-ffdbbc161b93
+---
 
-## How can I edit this code?
+## 🛡️ About
 
-There are several ways of editing your application.
+Swiper Chat is an advanced, end-to-end encrypted messaging app built entirely in the browser. Designed with a “zero trust” philosophy, no data is stored, no metadata is logged, and all communication is completely private.
 
-**Use Lovable**
+It’s not just secure — it’s **military-grade secure**.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8ef8d7ef-071a-4028-9e5d-ffdbbc161b93) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Features
 
-**Use your preferred IDE**
+- 🔐 **True End-to-End Encryption** (client-only key handling)
+- 💣 **Self-Destructing Messages** (burn on read or time)
+- 🧊 **No Server-Side Storage or Logs**
+- 🕵️‍♂️ **Anonymous Usage — No Accounts**
+- 📦 **Fully Web-Based — Runs Locally or on Static Hosts**
+- 🎨 Built with React, Tailwind, and shadcn/ui for a sleek, responsive UI
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## ⚙️ Tech Stack
 
-Follow these steps:
+- **Frontend Framework:** [React](https://reactjs.org/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/)
+- **Security:** Modern crypto APIs (AES-GCM, RSA, Web Crypto)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 📦 Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+Clone the repo and run it locally with:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+git clone https://github.com/anomaly2sys/swiper-chat-vault.git
+cd swiper-chat-vault
+npm install
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/8ef8d7ef-071a-4028-9e5d-ffdbbc161b93) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
