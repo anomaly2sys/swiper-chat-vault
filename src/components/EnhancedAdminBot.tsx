@@ -33,6 +33,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { aiService } from "@/services/aiService";
+import { databaseService } from "@/services/databaseService";
 
 interface EnhancedAdminBotProps {
   onCommand: (command: string, args: string[]) => string;
@@ -251,25 +253,67 @@ const EnhancedAdminBot: React.FC<EnhancedAdminBotProps> = ({ onCommand }) => {
     },
   ];
 
-  const executeCommand = () => {
+  const executeCommand = async () => {
     if (!currentCommand.trim().startsWith("/")) {
-      addBotMessage("❌ Commands must start with /", "error");
+      // Check if it's natural language
+      if (currentCommand.trim().length > 0) {
+        addBotMessage(currentCommand, "command");
+        const aiResponse =
+          await aiService.processNaturalLanguage(currentCommand);
+        addBotMessage(
+          `🤖 **AI ASSISTANT**\n\n${aiResponse.content}`,
+          "response",
+        );
+        if (
+          aiResponse.suggestedActions &&
+          aiResponse.suggestedActions.length > 0
+        ) {
+          addBotMessage(
+            `**Suggested Actions:**\n${aiResponse.suggestedActions.map((action) => `• \`${action}\``).join("\n")}`,
+            "help",
+          );
+        }
+        setCurrentCommand("");
+        return;
+      }
+      addBotMessage(
+        "❌ Commands must start with / or ask me in natural language",
+        "error",
+      );
       return;
     }
 
     const [cmd, ...args] = currentCommand.trim().split(" ");
     addBotMessage(currentCommand, "command");
 
-    setTimeout(() => {
+    // Process command with AI for enhanced responses
+    const aiQuery = {
+      command: cmd,
+      args,
+      context: { servers, roles, mutedUsers, bannedUsers },
+    };
+
+    setTimeout(async () => {
       let response = "";
+      let useAI = false;
 
       switch (cmd) {
         case "/help":
-          response = generateHelpResponse(args[0]);
+          const aiResponse = await aiService.processAdminQuery(aiQuery);
+          response = aiResponse.content;
+          useAI = true;
           break;
 
         case "/users":
           response = handleUsersCommand(args);
+          break;
+
+        case "/analyze":
+        case "/predict":
+        case "/optimize":
+          const aiAnalysis = await aiService.processAdminQuery(aiQuery);
+          response = aiAnalysis.content;
+          useAI = true;
           break;
 
         case "/roles":
@@ -306,7 +350,9 @@ const EnhancedAdminBot: React.FC<EnhancedAdminBotProps> = ({ onCommand }) => {
           break;
 
         case "/security":
-          response = handleSecurityCommand(args);
+          const securityAI = await aiService.processAdminQuery(aiQuery);
+          response = securityAI.content;
+          useAI = true;
           break;
 
         case "/purge":
@@ -318,10 +364,29 @@ const EnhancedAdminBot: React.FC<EnhancedAdminBotProps> = ({ onCommand }) => {
           break;
 
         default:
-          response = `❌ Unknown command: ${cmd}\nType /help to see all available commands.`;
+          const unknownAI = await aiService.processAdminQuery(aiQuery);
+          response = unknownAI.content;
+          useAI = true;
       }
 
       addBotMessage(response, response.includes("❌") ? "error" : "response");
+
+      // Add AI suggestions if available
+      if (useAI) {
+        const aiQuery = { command: cmd, args };
+        const suggestions = await aiService.processAdminQuery(aiQuery);
+        if (
+          suggestions.suggestedActions &&
+          suggestions.suggestedActions.length > 0
+        ) {
+          setTimeout(() => {
+            addBotMessage(
+              `💡 **AI Suggestions:**\n${suggestions.suggestedActions!.map((action) => `• \`${action}\``).join("\n")}`,
+              "help",
+            );
+          }, 1000);
+        }
+      }
     }, 800);
 
     setCurrentCommand("");
@@ -333,7 +398,7 @@ const EnhancedAdminBot: React.FC<EnhancedAdminBotProps> = ({ onCommand }) => {
 
 **Categories:**
 • /help users - User management commands
-• /help moderation - Moderation commands  
+• /help moderation - Moderation commands
 • /help roles - Role management commands
 • /help database - Database commands
 • /help servers - Server management commands
@@ -460,7 +525,7 @@ ${onlineUsers
         return `👤 **USER INFO** for ${user.displayName}:
 
 **Basic Info:**
-�� Username: @${user.username}
+• Username: @${user.username}
 • Display Name: ${user.displayName}
 • User ID: ${user.id}
 • Email: ${user.email || "Not provided"}
@@ -614,7 +679,7 @@ User has been temporarily muted.`;
         return `💾 **DATABASE TABLES:**
 
 • **users** - User accounts and profiles
-• **servers** - Server information and settings  
+• **servers** - Server information and settings
 • **channels** - Channel data and permissions
 • **messages** - Message history and metadata
 • **roles** - Role definitions and assignments
@@ -764,7 +829,7 @@ ${type} has been delivered to the user.`;
 
 **Scan Results:**
 ✅ No vulnerabilities detected
-✅ All encryption keys valid  
+✅ All encryption keys valid
 ✅ User permissions verified
 ✅ Database integrity: 100%
 ✅ Network security: Active
@@ -819,7 +884,7 @@ Operation completed successfully.`;
         return `🏰 **ALL SERVERS** (8 total):
 
 • **SwiperEmpire** (Main) - 42 members
-• **Dev Testing** - 5 members  
+• **Dev Testing** - 5 members
 • **Community Hub** - 128 members
 • **Gaming Zone** - 89 members
 • **Study Group** - 23 members
