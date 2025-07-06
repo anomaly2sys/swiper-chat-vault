@@ -52,10 +52,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      let success = false;
+      let result;
 
       if (isLogin) {
-        success = await login(formData.username, formData.password);
+        result = await login(formData.username, formData.password);
       } else {
         if (!formData.displayName.trim()) {
           toast({
@@ -67,7 +67,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           return;
         }
 
-        success = await register({
+        result = await register({
           username: formData.username,
           password: formData.password,
           displayName: formData.displayName,
@@ -76,7 +76,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         });
       }
 
-      if (success) {
+      if (result.success) {
         toast({
           title: isLogin ? "Welcome back!" : "Account created!",
           description: isLogin
@@ -87,9 +87,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       } else {
         toast({
           title: "Authentication failed",
-          description: isLogin
-            ? "Invalid username or password"
-            : "Username already exists",
+          description: result.message,
           variant: "destructive",
         });
       }
