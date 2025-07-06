@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useAuth } from "./AuthContext";
 
 export interface Server {
@@ -130,6 +136,51 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { currentUser } = useAuth();
+
+  // Auto-join user to SwiperEmpire when they log in
+  useEffect(() => {
+    if (currentUser && defaultServer) {
+      const isAlreadyMember = defaultServer.members.some(
+        (m) => m.userId === currentUser.id,
+      );
+      if (!isAlreadyMember) {
+        const newMember: ServerMember = {
+          userId: currentUser.id,
+          serverId: defaultServer.id,
+          roles: [
+            defaultServer.roles.find((r) => r.name === "@everyone")?.id || "",
+          ],
+          joinedAt: new Date(),
+          isMuted: false,
+          isBanned: false,
+        };
+
+        setServers((prev) =>
+          prev.map((s) =>
+            s.id === defaultServer.id
+              ? { ...s, members: [...s.members, newMember] }
+              : s,
+          ),
+        );
+
+        // Send welcome message
+        const welcomeMessage: Message = {
+          id: `welcome-${Date.now()}`,
+          content: `Welcome to SwiperEmpire, ${currentUser.displayName}! 🏰 You're now part of our community. Feel free to explore and chat with other members!`,
+          authorId: "system",
+          channelId: "general-channel",
+          serverId: defaultServer.id,
+          timestamp: new Date(),
+          isDisappearing: false,
+          requiresMutualConsent: false,
+          isEncrypted: true,
+          status: "sent",
+        };
+
+        setMessages((prev) => [...prev, welcomeMessage]);
+      }
+    }
+  }, [currentUser]);
 
   // Default SwiperEmpire server that all users join by default
   const defaultServer: Server = {
