@@ -46,7 +46,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChat } from "@/contexts/ChatContext";
-import EnhancedAdminBot from "./EnhancedAdminBot";
+import UnifiedAdminBot from "./UnifiedAdminBot";
 import UserProfile from "./UserProfile";
 import ServerManager from "./ServerManager";
 import UserContextMenu from "./UserContextMenu";
