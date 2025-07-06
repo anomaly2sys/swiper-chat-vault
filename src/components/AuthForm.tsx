@@ -298,16 +298,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
               </Button>
             </div>
           </form>
-
-          {/* Admin Hint */}
-          {isLogin && (
-            <div className="mt-6 p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-              <p className="text-xs text-purple-300 text-center">
-                <Shield className="h-3 w-3 inline mr-1" />
-                Admin login: BlankBank / TheRomanDoctor213*
-              </p>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

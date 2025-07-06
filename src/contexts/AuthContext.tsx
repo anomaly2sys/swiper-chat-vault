@@ -5,6 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { authService } from "../services/authService";
 
 export interface User {
   id: string;
@@ -22,11 +23,21 @@ export interface User {
 
 export interface AuthContextType {
   currentUser: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
-  register: (userData: RegisterData) => Promise<boolean>;
+  login: (
+    username: string,
+    password: string,
+  ) => Promise<{ success: boolean; message: string }>;
+  register: (
+    userData: RegisterData,
+  ) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
-  updateProfile: (updates: Partial<User>) => void;
+  updateProfile: (updates: Partial<User>) => Promise<boolean>;
+  changePassword: (
+    oldPassword: string,
+    newPassword: string,
+  ) => Promise<{ success: boolean; message: string }>;
   isAuthenticated: boolean;
+  getAllUsers: () => User[];
 }
 
 export interface RegisterData {
@@ -39,87 +50,49 @@ export interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users database
-const mockUsers: User[] = [
-  {
-    id: "admin-1",
-    username: "BlankBank",
-    displayName: "BlankBank",
-    email: "admin@swiperempire.com",
-    bio: "System Administrator - SwiperEmpire Founder",
-    profilePicture: "",
-    isAdmin: true,
-    joinedAt: new Date("2024-01-01"),
-    lastSeen: new Date(),
-    status: "online",
-  },
-];
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(mockUsers);
 
   useEffect(() => {
     // Check for saved session
     const savedUser = localStorage.getItem("currentUser");
     if (savedUser) {
-      const user = JSON.parse(savedUser);
-      setCurrentUser(user);
+      try {
+        const user = JSON.parse(savedUser);
+        setCurrentUser(user);
+      } catch (error) {
+        localStorage.removeItem("currentUser");
+      }
     }
   }, []);
 
   const login = async (
     username: string,
     password: string,
-  ): Promise<boolean> => {
-    // Check admin credentials
-    if (username === "BlankBank" && password === "TheRomanDoctor213*") {
-      const adminUser = users.find((u) => u.username === "BlankBank");
-      if (adminUser) {
-        setCurrentUser(adminUser);
-        localStorage.setItem("currentUser", JSON.stringify(adminUser));
-        return true;
-      }
+  ): Promise<{ success: boolean; message: string }> => {
+    const result = await authService.authenticateUser(username, password);
+
+    if (result.success && result.user) {
+      setCurrentUser(result.user);
+      localStorage.setItem("currentUser", JSON.stringify(result.user));
     }
 
-    // Check regular users
-    const user = users.find((u) => u.username === username);
-    if (user) {
-      // In a real app, verify password hash here
-      setCurrentUser(user);
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      return true;
-    }
-
-    return false;
+    return result;
   };
 
-  const register = async (userData: RegisterData): Promise<boolean> => {
-    // Check if username already exists
-    if (users.some((u) => u.username === userData.username)) {
-      return false;
+  const register = async (
+    userData: RegisterData,
+  ): Promise<{ success: boolean; message: string }> => {
+    const result = await authService.registerUser(userData);
+
+    if (result.success && result.user) {
+      setCurrentUser(result.user);
+      localStorage.setItem("currentUser", JSON.stringify(result.user));
     }
 
-    const newUser: User = {
-      id: `user-${Date.now()}`,
-      username: userData.username,
-      displayName: userData.displayName,
-      email: userData.email,
-      phone: userData.phone,
-      bio: "",
-      profilePicture: "",
-      isAdmin: false,
-      joinedAt: new Date(),
-      lastSeen: new Date(),
-      status: "online",
-    };
-
-    setUsers((prev) => [...prev, newUser]);
-    setCurrentUser(newUser);
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    return true;
+    return result;
   };
 
   const logout = () => {
@@ -127,15 +100,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.removeItem("currentUser");
   };
 
-  const updateProfile = (updates: Partial<User>) => {
+  const updateProfile = async (updates: Partial<User>): Promise<boolean> => {
     if (currentUser) {
-      const updatedUser = { ...currentUser, ...updates };
-      setCurrentUser(updatedUser);
-      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-      setUsers((prev) =>
-        prev.map((u) => (u.id === currentUser.id ? updatedUser : u)),
+      const success = await authService.updateUser(
+        currentUser.username,
+        updates,
       );
+      if (success) {
+        const updatedUser = { ...currentUser, ...updates };
+        setCurrentUser(updatedUser);
+        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      }
+      return success;
     }
+    return false;
+  };
+
+  const changePassword = async (
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<{ success: boolean; message: string }> => {
+    if (!currentUser) {
+      return { success: false, message: "Not authenticated" };
+    }
+
+    return await authService.changePassword(
+      currentUser.username,
+      oldPassword,
+      newPassword,
+    );
+  };
+
+  const getAllUsers = (): User[] => {
+    return authService.getAllUsers();
   };
 
   return (
