@@ -99,7 +99,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const register = async (
     userData: RegisterData,
   ): Promise<{ success: boolean; message: string }> => {
-    const result = await authService.registerUser(userData);
+    const result = await realAuthService.registerUser(userData);
 
     if (result.success && result.user) {
       // Ensure Date objects are properly set
