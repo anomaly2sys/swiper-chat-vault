@@ -61,6 +61,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (savedUser) {
       try {
         const user = JSON.parse(savedUser);
+        // Convert date strings back to Date objects
+        if (user.joinedAt) {
+          user.joinedAt = new Date(user.joinedAt);
+        }
+        if (user.lastSeen) {
+          user.lastSeen = new Date(user.lastSeen);
+        }
         setCurrentUser(user);
       } catch (error) {
         localStorage.removeItem("currentUser");
