@@ -247,11 +247,19 @@ const EnhancedAdminDashboard: React.FC = () => {
     <div className="h-full p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+        <div className="flex items-center space-x-3">
+          <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+          {isLoading && (
+            <div className="flex items-center space-x-2 text-gray-400">
+              <div className="w-4 h-4 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm">Loading...</span>
+            </div>
+          )}
+        </div>
         <div className="flex space-x-2">
           <Button
             onClick={() => setShowBotConsole(true)}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-purple-600 hover:bg-purple-700 transition-colors"
           >
             <MessageSquare className="h-4 w-4 mr-2" />
             Bot Console
@@ -259,11 +267,11 @@ const EnhancedAdminDashboard: React.FC = () => {
           <Button
             onClick={loadDashboardData}
             variant="outline"
-            className="border-gray-600"
+            className="border-gray-600 hover:bg-gray-700 transition-colors"
             disabled={isLoading}
           >
             <RefreshCw
-              className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+              className={`h-4 w-4 mr-2 transition-transform ${isLoading ? "animate-spin" : ""}`}
             />
             Refresh
           </Button>
