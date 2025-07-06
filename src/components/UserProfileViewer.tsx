@@ -220,7 +220,10 @@ const UserProfileViewer: React.FC<UserProfileViewerProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] bg-black/40 border-purple-500/30 backdrop-blur-xl p-0">
+      <DialogContent
+        ref={modalRef}
+        className="max-w-4xl max-h-[90vh] bg-black/40 border-purple-500/30 backdrop-blur-xl p-0"
+      >
         {isLoading ? (
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
