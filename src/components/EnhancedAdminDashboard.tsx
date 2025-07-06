@@ -225,24 +225,6 @@ const EnhancedAdminDashboard: React.FC = () => {
       user.email?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  if (showBotConsole) {
-    return (
-      <div className="h-full p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">Admin Bot Console</h1>
-          <Button
-            onClick={() => setShowBotConsole(false)}
-            variant="outline"
-            className="border-gray-600"
-          >
-            Back to Dashboard
-          </Button>
-        </div>
-        <UnifiedAdminBot />
-      </div>
-    );
-  }
-
   return (
     <div className="h-full p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
