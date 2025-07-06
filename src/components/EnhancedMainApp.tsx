@@ -59,11 +59,11 @@ const EnhancedMainApp: React.FC = () => {
                   variant={currentView === "admin" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => switchView("admin")}
-                  className={
+                  className={`transition-all duration-200 ${
                     currentView === "admin"
-                      ? "bg-yellow-600 hover:bg-yellow-700"
+                      ? "bg-yellow-600 hover:bg-yellow-700 shadow-lg shadow-yellow-500/25"
                       : "text-gray-300 hover:text-white hover:bg-white/10"
-                  }
+                  }`}
                 >
                   <Crown className="h-4 w-4 mr-2" />
                   Admin
