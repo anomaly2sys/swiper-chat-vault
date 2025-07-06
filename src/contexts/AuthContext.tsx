@@ -127,16 +127,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const updateProfile = async (updates: Partial<User>): Promise<boolean> => {
     if (currentUser) {
-      const success = await authService.updateUser(
-        currentUser.username,
+      const result = await realAuthService.updateUserProfile(
+        currentUser.id,
         updates,
       );
-      if (success) {
-        const updatedUser = { ...currentUser, ...updates };
-        setCurrentUser(updatedUser);
-        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      if (result.success && result.user) {
+        setCurrentUser(result.user);
+        localStorage.setItem("currentUser", JSON.stringify(result.user));
+        return true;
       }
-      return success;
+      return false;
     }
     return false;
   };
