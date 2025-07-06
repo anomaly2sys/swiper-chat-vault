@@ -1,6 +1,4 @@
 // Email and SMS verification service
-// In production, this would use real SMTP server and Twilio
-
 interface VerificationCode {
   code: string;
   type: "email" | "sms";
@@ -53,7 +51,7 @@ class VerificationService {
   ): Promise<{ success: boolean; message: string; codeId?: string }> {
     try {
       const code = this.generateCode();
-      const codeId = `email-${Date.now()}-${Math.random()}`;
+      const codeId = "email-" + Date.now() + "-" + Math.random();
 
       const verificationCode: VerificationCode = {
         code,
@@ -66,7 +64,6 @@ class VerificationService {
 
       this.codes.set(codeId, verificationCode);
 
-      // In production, this would use a real SMTP service like nodemailer
       const emailSent = await this.sendEmail(email, username, code);
 
       if (emailSent) {
@@ -96,7 +93,7 @@ class VerificationService {
   ): Promise<{ success: boolean; message: string; codeId?: string }> {
     try {
       const code = this.generateCode();
-      const codeId = `sms-${Date.now()}-${Math.random()}`;
+      const codeId = "sms-" + Date.now() + "-" + Math.random();
 
       const verificationCode: VerificationCode = {
         code,
@@ -109,7 +106,6 @@ class VerificationService {
 
       this.codes.set(codeId, verificationCode);
 
-      // In production, this would use Twilio
       const smsSent = await this.sendSMS(phone, username, code);
 
       if (smsSent) {
@@ -188,7 +184,10 @@ class VerificationService {
 
       return {
         success: false,
-        message: `Invalid code. ${this.maxAttempts - verificationCode.attempts} attempts remaining.`,
+        message:
+          "Invalid code. " +
+          (this.maxAttempts - verificationCode.attempts) +
+          " attempts remaining.",
       };
     }
   }
@@ -206,8 +205,6 @@ class VerificationService {
 
     // Simulate email sending delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // In production, you would use nodemailer with SMTP configuration
 
     return true; // Mock success
   }
@@ -227,8 +224,6 @@ class VerificationService {
 
     // Simulate SMS sending delay
     await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // In production, you would use Twilio SMS service
 
     return true; // Mock success
   }
