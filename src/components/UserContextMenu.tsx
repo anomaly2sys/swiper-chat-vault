@@ -64,6 +64,7 @@ const UserContextMenu: React.FC<UserContextMenuProps> = ({
     customDuration: "",
     message: "",
   });
+  const [showProfile, setShowProfile] = useState(false);
   const { toast } = useToast();
 
   const canModerate =
