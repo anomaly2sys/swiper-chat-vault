@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { databaseService } from "./databaseService";
 
 interface UserCredentials {
   username: string;
@@ -34,8 +35,17 @@ const initializeAdminUser = async () => {
   });
 };
 
-// Initialize admin user
-initializeAdminUser();
+// Initialize database and admin user
+const initializeSystem = async () => {
+  try {
+    await databaseService.init();
+    await initializeAdminUser();
+  } catch (error) {
+    console.error("Failed to initialize system:", error);
+  }
+};
+
+initializeSystem();
 
 export const authService = {
   async hashPassword(password: string): Promise<string> {
