@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import AuthForm from "@/components/AuthForm";
+import EnhancedAuthForm from "@/components/EnhancedAuthForm";
 import MainChatApp from "@/components/MainChatApp";
 
 const Index = () => {
@@ -10,7 +10,7 @@ const Index = () => {
     return <MainChatApp />;
   }
 
-  return <AuthForm onSuccess={() => {}} />;
+  return <EnhancedAuthForm onSuccess={() => {}} />;
 };
 
 export default Index;
