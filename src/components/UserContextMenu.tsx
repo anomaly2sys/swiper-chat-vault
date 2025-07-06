@@ -34,6 +34,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import UserProfileViewer from "./UserProfileViewer";
 
 interface UserContextMenuProps {
   username: string;
@@ -134,10 +135,7 @@ const UserContextMenu: React.FC<UserContextMenuProps> = ({
   };
 
   const handleViewProfile = () => {
-    toast({
-      title: "User Profile",
-      description: `Viewing profile for ${username}`,
-    });
+    setShowProfile(true);
   };
 
   const getDialogTitle = () => {
@@ -386,6 +384,13 @@ const UserContextMenu: React.FC<UserContextMenuProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* User Profile Viewer */}
+      <UserProfileViewer
+        username={username}
+        isOpen={showProfile}
+        onClose={() => setShowProfile(false)}
+      />
     </>
   );
 };

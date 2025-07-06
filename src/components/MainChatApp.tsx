@@ -51,6 +51,8 @@ import UserProfile from "./UserProfile";
 import ServerManager from "./ServerManager";
 import UserContextMenu from "./UserContextMenu";
 import MessageControls from "./MessageControls";
+import RoleBadge from "./RoleBadge";
+import { useNavigate } from "react-router-dom";
 
 const MainChatApp: React.FC = () => {
   const { currentUser, logout } = useAuth();
@@ -81,6 +83,7 @@ const MainChatApp: React.FC = () => {
     server?: any;
   }>({ isOpen: false, mode: "create" });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -338,7 +341,7 @@ const MainChatApp: React.FC = () => {
                 {currentUser?.isAdmin && (
                   <DropdownMenuItem
                     className="text-yellow-300 hover:bg-yellow-900/20"
-                    onClick={() => window.open("/admin-dashboard", "_blank")}
+                    onClick={() => navigate("/admin-dashboard")}
                   >
                     <Crown className="h-4 w-4 mr-2" />
                     Admin Dashboard
@@ -498,14 +501,26 @@ const MainChatApp: React.FC = () => {
                               ? currentUser.displayName
                               : "User"}
                         </span>
-                        {message.authorId === "system" && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-green-500/20 text-green-300 text-xs"
-                          >
-                            SYSTEM
-                          </Badge>
-                        )}
+                        <RoleBadge
+                          username={
+                            message.authorId === "system"
+                              ? "SwiperEmpire System"
+                              : message.authorId === currentUser?.id
+                                ? currentUser.displayName
+                                : "User"
+                          }
+                          isAdmin={
+                            message.authorId === "admin-1" ||
+                            (message.authorId === currentUser?.id &&
+                              currentUser?.isAdmin)
+                          }
+                          roles={
+                            message.authorId === currentUser?.id &&
+                            currentUser?.isAdmin
+                              ? ["Administrator"]
+                              : ["Member"]
+                          }
+                        />
                         <span className="text-xs text-gray-400">
                           {message.timestamp.toLocaleTimeString()}
                         </span>
