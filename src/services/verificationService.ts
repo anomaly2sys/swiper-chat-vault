@@ -221,7 +221,7 @@ SwiperEmpire Team`);
     // In production, you would use nodemailer:
     /*
     const nodemailer = require('nodemailer');
-    
+
     const transporter = nodemailer.createTransporter({
       host: this.smtpConfig.host,
       port: this.smtpConfig.port,
@@ -288,12 +288,12 @@ SwiperEmpire Team`);
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
             .header { text-align: center; margin-bottom: 30px; }
             .logo { color: #8b5cf6; font-size: 24px; font-weight: bold; }
-            .code-box { 
+            .code-box {
                 background: linear-gradient(135deg, #8b5cf6, #ec4899);
-                padding: 20px; 
-                text-align: center; 
-                border-radius: 10px; 
-                margin: 20px 0; 
+                padding: 20px;
+                text-align: center;
+                border-radius: 10px;
+                margin: 20px 0;
             }
             .code { font-size: 32px; font-weight: bold; letter-spacing: 5px; }
             .footer { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px; }
@@ -305,24 +305,24 @@ SwiperEmpire Team`);
                 <div class="logo">🏰 SwiperEmpire</div>
                 <h2>Email Verification</h2>
             </div>
-            
+
             <p>Dear ${username},</p>
-            
+
             <p>Welcome to SwiperEmpire! Please use the verification code below to complete your registration:</p>
-            
+
             <div class="code-box">
                 <div class="code">${code}</div>
             </div>
-            
+
             <p><strong>Important:</strong></p>
             <ul>
                 <li>This code expires in 10 minutes</li>
                 <li>You have 3 attempts to enter the correct code</li>
                 <li>If you didn't request this, please ignore this email</li>
             </ul>
-            
+
             <p>Thank you for joining our secure messaging platform!</p>
-            
+
             <div class="footer">
                 <p>SwiperEmpire - Secure • Private • Encrypted</p>
                 <p>This is an automated message. Please do not reply.</p>
@@ -373,6 +373,8 @@ SwiperEmpire Team`);
   }
 }
 
+export const verificationService = new VerificationService();
+
 // Cleanup expired codes every 5 minutes
 setInterval(
   () => {
@@ -380,5 +382,3 @@ setInterval(
   },
   5 * 60 * 1000,
 );
-
-export const verificationService = new VerificationService();
