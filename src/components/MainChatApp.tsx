@@ -84,6 +84,22 @@ const MainChatApp: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, directMessages]);
 
+  // Welcome toast for new users
+  useEffect(() => {
+    if (currentUser) {
+      const welcomeTimeout = setTimeout(() => {
+        toast({
+          title: `Welcome to SwiperEmpire, ${currentUser.displayName}! 🏰`,
+          description: currentUser.isAdmin
+            ? "You have admin access. Check out the admin-console channel for bot commands!"
+            : "Explore channels, create servers, and chat securely with disappearing messages!",
+        });
+      }, 1000);
+
+      return () => clearTimeout(welcomeTimeout);
+    }
+  }, [currentUser, toast]);
+
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
