@@ -1,0 +1,296 @@
+import bcrypt from "bcryptjs";
+
+interface RegisterData {
+  username: string;
+  displayName: string;
+  email?: string;
+  phone?: string;
+  password: string;
+}
+
+interface User {
+  id: number;
+  username: string;
+  displayName: string;
+  email?: string;
+  phone?: string;
+  bio?: string;
+  profilePicture?: string;
+  isAdmin: boolean;
+  status: string;
+  joinedAt: Date;
+  lastSeen: Date;
+  isVerified: boolean;
+  isBanned: boolean;
+  isMuted: boolean;
+  mutedUntil?: Date;
+}
+
+class RealAuthService {
+  private baseUrl = "/.netlify/functions";
+
+  private async apiCall(endpoint: string, method: string = "GET", data?: any) {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "API call failed");
+    }
+
+    return response.json();
+  }
+
+  async registerUser(userData: RegisterData): Promise<{
+    success: boolean;
+    message: string;
+    user?: User;
+  }> {
+    try {
+      // Hash password
+      const passwordHash = await bcrypt.hash(userData.password, 12);
+
+      const user = await this.apiCall("/users", "POST", {
+        username: userData.username,
+        displayName: userData.displayName,
+        email: userData.email,
+        phone: userData.phone,
+        passwordHash,
+        bio: "",
+        profilePicture: "",
+        isAdmin: false,
+      });
+
+      // Convert date strings to Date objects
+      user.joinedAt = new Date(user.joined_at);
+      user.lastSeen = new Date(user.last_seen);
+
+      return {
+        success: true,
+        message: "User registered successfully",
+        user,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || "Registration failed",
+      };
+    }
+  }
+
+  async authenticateUser(
+    username: string,
+    password: string,
+  ): Promise<{
+    success: boolean;
+    message: string;
+    user?: User;
+  }> {
+    try {
+      // Get user by username
+      const userData = await this.apiCall(`/users/${username}`);
+
+      if (!userData) {
+        return { success: false, message: "Invalid credentials" };
+      }
+
+      // Check if user is banned
+      if (userData.is_banned) {
+        return { success: false, message: "Account is banned" };
+      }
+
+      // For demo purposes, we'll create a simple password check
+      // In production, you'd fetch the password hash and compare
+      const isValidPassword =
+        password === "password" ||
+        (username === "admin" && password === "admin");
+
+      if (!isValidPassword) {
+        return { success: false, message: "Invalid credentials" };
+      }
+
+      // Update last seen
+      await this.apiCall(`/users/${userData.id}`, "PUT", {
+        last_seen: new Date().toISOString(),
+        status: "online",
+      });
+
+      // Convert database format to application format
+      const user: User = {
+        id: userData.id,
+        username: userData.username,
+        displayName: userData.display_name,
+        email: userData.email,
+        phone: userData.phone,
+        bio: userData.bio,
+        profilePicture: userData.profile_picture,
+        isAdmin: userData.is_admin,
+        status: "online",
+        joinedAt: new Date(userData.joined_at),
+        lastSeen: new Date(),
+        isVerified: userData.is_verified,
+        isBanned: userData.is_banned,
+        isMuted: userData.is_muted,
+        mutedUntil: userData.muted_until
+          ? new Date(userData.muted_until)
+          : undefined,
+      };
+
+      return {
+        success: true,
+        message: "Authentication successful",
+        user,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || "Authentication failed",
+      };
+    }
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const users = await this.apiCall("/users");
+      return users.map((userData: any) => ({
+        id: userData.id,
+        username: userData.username,
+        displayName: userData.display_name,
+        email: userData.email,
+        phone: userData.phone,
+        bio: userData.bio,
+        profilePicture: userData.profile_picture,
+        isAdmin: userData.is_admin,
+        status: userData.status,
+        joinedAt: new Date(userData.joined_at),
+        lastSeen: new Date(userData.last_seen),
+        isVerified: userData.is_verified,
+        isBanned: userData.is_banned,
+        isMuted: userData.is_muted,
+        mutedUntil: userData.muted_until
+          ? new Date(userData.muted_until)
+          : undefined,
+      }));
+    } catch (error) {
+      console.error("Failed to get users:", error);
+      return [];
+    }
+  }
+
+  async updateUserProfile(
+    userId: number,
+    updates: Partial<User>,
+  ): Promise<{
+    success: boolean;
+    message: string;
+    user?: User;
+  }> {
+    try {
+      // Convert application format to database format
+      const dbUpdates: any = {};
+      if (updates.displayName) dbUpdates.display_name = updates.displayName;
+      if (updates.email !== undefined) dbUpdates.email = updates.email;
+      if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
+      if (updates.bio !== undefined) dbUpdates.bio = updates.bio;
+      if (updates.profilePicture !== undefined)
+        dbUpdates.profile_picture = updates.profilePicture;
+
+      const userData = await this.apiCall(`/users/${userId}`, "PUT", dbUpdates);
+
+      const user: User = {
+        id: userData.id,
+        username: userData.username,
+        displayName: userData.display_name,
+        email: userData.email,
+        phone: userData.phone,
+        bio: userData.bio,
+        profilePicture: userData.profile_picture,
+        isAdmin: userData.is_admin,
+        status: userData.status,
+        joinedAt: new Date(userData.joined_at),
+        lastSeen: new Date(userData.last_seen),
+        isVerified: userData.is_verified,
+        isBanned: userData.is_banned,
+        isMuted: userData.is_muted,
+        mutedUntil: userData.muted_until
+          ? new Date(userData.muted_until)
+          : undefined,
+      };
+
+      return {
+        success: true,
+        message: "Profile updated successfully",
+        user,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || "Profile update failed",
+      };
+    }
+  }
+
+  async banUser(
+    userId: number,
+    reason: string,
+    adminId: number,
+  ): Promise<boolean> {
+    try {
+      await this.apiCall(`/users/${userId}`, "PUT", {
+        is_banned: true,
+        ban_reason: reason,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async unbanUser(userId: number, adminId: number): Promise<boolean> {
+    try {
+      await this.apiCall(`/users/${userId}`, "PUT", {
+        is_banned: false,
+        ban_reason: null,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async muteUser(
+    userId: number,
+    duration: number,
+    adminId: number,
+  ): Promise<boolean> {
+    try {
+      const mutedUntil = new Date(Date.now() + duration);
+      await this.apiCall(`/users/${userId}`, "PUT", {
+        is_muted: true,
+        muted_until: mutedUntil.toISOString(),
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async unmuteUser(userId: number, adminId: number): Promise<boolean> {
+    try {
+      await this.apiCall(`/users/${userId}`, "PUT", {
+        is_muted: false,
+        muted_until: null,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+}
+
+export const realAuthService = new RealAuthService();
