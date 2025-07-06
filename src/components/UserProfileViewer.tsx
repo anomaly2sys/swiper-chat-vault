@@ -85,6 +85,7 @@ const UserProfileViewer: React.FC<UserProfileViewerProps> = ({
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const modalRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
