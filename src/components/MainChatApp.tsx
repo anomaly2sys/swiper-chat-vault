@@ -69,6 +69,7 @@ const MainChatApp: React.FC = () => {
     joinServer,
     createChannel,
     executeAdminCommand,
+    canAccessChannel,
   } = useChat();
 
   const [newMessage, setNewMessage] = useState("");
@@ -239,58 +240,66 @@ const MainChatApp: React.FC = () => {
 
         {/* Channels */}
         <ScrollArea className="flex-1">
-          {currentServer?.categories.map((category) => (
-            <div key={category.id} className="p-2">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {category.name}
-                </span>
-                {(currentUser?.isAdmin ||
-                  currentServer?.ownerId === currentUser?.id) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-4 w-4 p-0 text-gray-400 hover:text-white"
-                    onClick={() =>
-                      setServerManager({
-                        isOpen: true,
-                        mode: "manage",
-                        server: currentServer,
-                      })
-                    }
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                )}
-              </div>
+          {currentServer?.categories
+            .filter((category) =>
+              category.channels.some((channel) =>
+                canAccessChannel(channel, currentUser),
+              ),
+            )
+            .map((category) => (
+              <div key={category.id} className="p-2">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    {category.name}
+                  </span>
+                  {(currentUser?.isAdmin ||
+                    currentServer?.ownerId === currentUser?.id) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-4 w-4 p-0 text-gray-400 hover:text-white"
+                      onClick={() =>
+                        setServerManager({
+                          isOpen: true,
+                          mode: "manage",
+                          server: currentServer,
+                        })
+                      }
+                    >
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
 
-              {category.channels.map((channel) => (
-                <Button
-                  key={channel.id}
-                  variant="ghost"
-                  className={`w-full justify-start mb-1 ${
-                    currentChannel?.id === channel.id
-                      ? "bg-purple-500/20 text-white"
-                      : "text-gray-300 hover:bg-gray-700"
-                  }`}
-                  onClick={() => {
-                    setCurrentChannel(channel);
-                    setSelectedDM(null);
-                  }}
-                >
-                  {channel.type === "text" ? (
-                    <Hash className="h-4 w-4 mr-2" />
-                  ) : (
-                    <Volume2 className="h-4 w-4 mr-2" />
-                  )}
-                  {channel.name}
-                  {channel.name === "admin-console" && (
-                    <Crown className="h-3 w-3 ml-auto text-yellow-500" />
-                  )}
-                </Button>
-              ))}
-            </div>
-          ))}
+                {category.channels
+                  .filter((channel) => canAccessChannel(channel, currentUser))
+                  .map((channel) => (
+                    <Button
+                      key={channel.id}
+                      variant="ghost"
+                      className={`w-full justify-start mb-1 ${
+                        currentChannel?.id === channel.id
+                          ? "bg-purple-500/20 text-white"
+                          : "text-gray-300 hover:bg-gray-700"
+                      }`}
+                      onClick={() => {
+                        setCurrentChannel(channel);
+                        setSelectedDM(null);
+                      }}
+                    >
+                      {channel.type === "text" ? (
+                        <Hash className="h-4 w-4 mr-2" />
+                      ) : (
+                        <Volume2 className="h-4 w-4 mr-2" />
+                      )}
+                      {channel.name}
+                      {channel.name === "admin-console" && (
+                        <Crown className="h-3 w-3 ml-auto text-yellow-500" />
+                      )}
+                    </Button>
+                  ))}
+              </div>
+            ))}
         </ScrollArea>
 
         {/* User Info */}
