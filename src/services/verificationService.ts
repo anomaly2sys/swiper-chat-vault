@@ -221,27 +221,7 @@ class VerificationService {
     // Simulate email sending delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // In production, you would use nodemailer:
-    /*
-    const nodemailer = require('nodemailer');
-
-    const transporter = nodemailer.createTransporter({
-      host: this.smtpConfig.host,
-      port: this.smtpConfig.port,
-      secure: this.smtpConfig.secure,
-      auth: this.smtpConfig.auth
-    });
-
-    const mailOptions = {
-      from: this.smtpConfig.auth.user,
-      to: email,
-      subject: 'SwiperEmpire Verification Code',
-      html: this.getEmailTemplate(username, code)
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    return !!result.messageId;
-    */
+    // In production, you would use nodemailer with SMTP configuration
 
     return true; // Mock success
   }
