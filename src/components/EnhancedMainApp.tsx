@@ -108,6 +108,12 @@ const EnhancedMainApp: React.FC = () => {
       <div className="h-[calc(100vh-80px)]">
         {currentView === "chat" ? <MainChatApp /> : <EnhancedAdminDashboard />}
       </div>
+
+      {/* Profile Popup */}
+      <EnhancedProfilePopup
+        isOpen={showProfile}
+        onClose={() => setShowProfile(false)}
+      />
     </div>
   );
 };
