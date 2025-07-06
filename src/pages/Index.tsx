@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import EnhancedAuthForm from "@/components/EnhancedAuthForm";
-import MainChatApp from "@/components/MainChatApp";
+import EnhancedMainApp from "@/components/EnhancedMainApp";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
