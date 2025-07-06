@@ -77,7 +77,7 @@ const EnhancedAdminDashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [showBotConsole, setShowBotConsole] = useState(false);
+
   const { currentUser } = useAuth();
   const { toast } = useToast();
 
