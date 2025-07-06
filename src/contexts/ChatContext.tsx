@@ -290,6 +290,11 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [directMessages, setDirectMessages] = useState<DirectMessage[]>([]);
 
+  // Save servers to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("swiperEmpire_servers", JSON.stringify(servers));
+  }, [servers]);
+
   const adminCommands: AdminCommand[] = [
     {
       command: "/users",
