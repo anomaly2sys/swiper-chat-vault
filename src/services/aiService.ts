@@ -40,15 +40,15 @@ class AIService {
 
   private async callOpenAI(query: UserQuery): Promise<AIResponse> {
     // Mock implementation - in production, use actual OpenAI API
-    const systemPrompt = `You are an advanced admin bot for SwiperEmpire, a secure messaging platform. 
+    const systemPrompt = `You are an advanced admin bot for SwiperEmpire, a secure messaging platform.
     You have access to user management, server administration, and database operations.
     Provide helpful, accurate responses for admin commands and system management.
     Always prioritize security and proper procedures.`;
 
     const userPrompt = `Admin command: ${query.command} ${query.args.join(" ")}
-    
+
     Context: ${JSON.stringify(query.context || {})}
-    
+
     Provide a helpful response and suggest relevant follow-up actions.`;
 
     // This is where you'd make the actual OpenAI API call
@@ -112,7 +112,7 @@ class AIService {
 
 **Core Security Commands:**
 • \`/security scan\` - Run comprehensive vulnerability scan
-• \`/security audit\` - Generate detailed security audit report
+��� \`/security audit\` - Generate detailed security audit report
 • \`/security monitor\` - View real-time security monitoring
 • \`/users verify <username>\` - Verify user identity
 • \`/sessions active\` - View active user sessions
@@ -454,7 +454,7 @@ I can understand context and provide intelligent recommendations!`;
     if (lowerInput.includes("how many users")) {
       return {
         content:
-          "I'll get the current user statistics for you. Use `/users list` or `/stats` for detailed information.",
+          "I will get the current user statistics for you. Use /users list or /stats for detailed information.",
         confidence: 0.95,
         suggestedActions: ["/users list", "/stats", "/users analyze"],
       };
@@ -463,7 +463,7 @@ I can understand context and provide intelligent recommendations!`;
     if (lowerInput.includes("security") && lowerInput.includes("scan")) {
       return {
         content:
-          "I'll run a comprehensive security scan. This includes threat detection, vulnerability assessment, and system health check.",
+          "I will run a comprehensive security scan. This includes threat detection, vulnerability assessment, and system health check.",
         confidence: 0.92,
         suggestedActions: [
           "/security scan",
@@ -475,7 +475,7 @@ I can understand context and provide intelligent recommendations!`;
 
     return {
       content:
-        "I understand you're looking for assistance. Try using specific commands like `/help`, `/users list`, or `/security scan`. I can also help if you describe what you'd like to accomplish.",
+        "I understand you are looking for assistance. Try using specific commands like /help, /users list, or /security scan.",
       confidence: 0.7,
       suggestedActions: ["/help", "/users list", "/security scan"],
     };
