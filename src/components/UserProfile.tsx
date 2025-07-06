@@ -123,7 +123,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-hidden bg-black/40 border-purple-500/30 backdrop-blur-xl">
+      <Card
+        ref={modalRef}
+        className="w-full max-w-2xl max-h-[90vh] overflow-hidden bg-black/40 border-purple-500/30 backdrop-blur-xl"
+      >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl text-white flex items-center">
