@@ -44,11 +44,11 @@ const EnhancedMainApp: React.FC = () => {
                 variant={currentView === "chat" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => switchView("chat")}
-                className={
+                className={`transition-all duration-200 ${
                   currentView === "chat"
-                    ? "bg-purple-600 hover:bg-purple-700"
+                    ? "bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/25"
                     : "text-gray-300 hover:text-white hover:bg-white/10"
-                }
+                }`}
               >
                 <Home className="h-4 w-4 mr-2" />
                 Chat
