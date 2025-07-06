@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Crown, MessageSquare, Settings, LogOut } from "lucide-react";
+import {
+  Home,
+  Crown,
+  MessageSquare,
+  Settings,
+  LogOut,
+  User,
+} from "lucide-react";
 import MainChatApp from "./MainChatApp";
 import EnhancedAdminDashboard from "./EnhancedAdminDashboard";
-import NavigationBar from "./NavigationBar";
+import EnhancedProfilePopup from "./EnhancedProfilePopup";
 
 type ViewType = "chat" | "admin";
 
