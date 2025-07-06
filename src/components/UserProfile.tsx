@@ -38,6 +38,7 @@ interface UserProfileProps {
 const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
   const { currentUser, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     displayName: currentUser?.displayName || "",
     bio: currentUser?.bio || "",
