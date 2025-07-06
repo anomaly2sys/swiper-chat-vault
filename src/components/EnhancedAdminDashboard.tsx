@@ -52,6 +52,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { realDatabaseService } from "@/services/realDatabaseService";
 import UnifiedAdminBot from "./UnifiedAdminBot";
+import RoleManagement from "./RoleManagement";
 
 interface SystemStats {
   totalUsers: number;
