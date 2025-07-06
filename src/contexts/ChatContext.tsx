@@ -287,13 +287,53 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(
     defaultServer.categories[0].channels[0],
   );
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [directMessages, setDirectMessages] = useState<DirectMessage[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const savedMessages = localStorage.getItem("swiperEmpire_messages");
+    if (savedMessages) {
+      try {
+        return JSON.parse(savedMessages).map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+          disappearAt: msg.disappearAt ? new Date(msg.disappearAt) : undefined,
+        }));
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
 
-  // Save servers to localStorage whenever they change
+  const [directMessages, setDirectMessages] = useState<DirectMessage[]>(() => {
+    const savedDMs = localStorage.getItem("swiperEmpire_directMessages");
+    if (savedDMs) {
+      try {
+        return JSON.parse(savedDMs).map((dm: any) => ({
+          ...dm,
+          timestamp: new Date(dm.timestamp),
+          disappearAt: dm.disappearAt ? new Date(dm.disappearAt) : undefined,
+        }));
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+
+  // Save data to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("swiperEmpire_servers", JSON.stringify(servers));
   }, [servers]);
+
+  useEffect(() => {
+    localStorage.setItem("swiperEmpire_messages", JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "swiperEmpire_directMessages",
+      JSON.stringify(directMessages),
+    );
+  }, [directMessages]);
 
   const adminCommands: AdminCommand[] = [
     {
