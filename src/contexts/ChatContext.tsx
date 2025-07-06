@@ -128,6 +128,7 @@ export interface ChatContextType {
   deleteServer: (serverId: string) => void;
   sendWarning: (userId: string, message: string) => void;
   executeAdminCommand: (command: string, args: string[]) => string;
+  canAccessChannel: (channel: Channel, user: any) => boolean;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -231,13 +232,13 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
             type: "text",
             categoryId: "admin-cat",
             serverId: "swiper-empire",
-            topic: "Administrative commands and bot management",
+            topic: "Administrative commands and bot management - ADMIN ONLY",
             position: 0,
             permissions: [
               {
                 roleId: "admin-role",
                 allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
-                deny: [],
+                deny: ["VIEW_CHANNEL"],
               },
             ],
           },
@@ -582,6 +583,21 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     console.log(`Warning sent to user ${userId}: ${message}`);
   };
 
+  const canAccessChannel = (channel: Channel, user: any): boolean => {
+    // Admin can access all channels
+    if (user?.isAdmin) return true;
+
+    // Check if it's an admin-only channel
+    if (
+      channel.name === "admin-console" ||
+      channel.categoryId === "admin-cat"
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
   const executeAdminCommand = (command: string, args: string[]): string => {
     if (!currentUser?.isAdmin)
       return "Access denied. Admin privileges required.";
@@ -623,6 +639,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
         deleteServer,
         sendWarning,
         executeAdminCommand,
+        canAccessChannel,
       }}
     >
       {children}
