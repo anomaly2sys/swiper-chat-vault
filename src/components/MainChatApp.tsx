@@ -48,6 +48,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useChat } from "@/contexts/ChatContext";
 import AdminBot from "./AdminBot";
 import UserProfile from "./UserProfile";
+import ServerManager from "./ServerManager";
 
 const MainChatApp: React.FC = () => {
   const { currentUser, logout } = useAuth();
@@ -69,11 +70,13 @@ const MainChatApp: React.FC = () => {
   } = useChat();
 
   const [newMessage, setNewMessage] = useState("");
-  const [showServerCreator, setShowServerCreator] = useState(false);
-  const [showChannelCreator, setShowChannelCreator] = useState(false);
-  const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [selectedDM, setSelectedDM] = useState<string | null>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [serverManager, setServerManager] = useState<{
+    isOpen: boolean;
+    mode: "create" | "join" | "manage";
+    server?: any;
+  }>({ isOpen: false, mode: "create" });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -151,7 +154,7 @@ const MainChatApp: React.FC = () => {
           variant="ghost"
           size="sm"
           className="w-12 h-12 rounded-full border-2 border-dashed border-gray-500 text-gray-400 hover:border-purple-400 hover:text-purple-400"
-          onClick={() => setShowServerCreator(true)}
+          onClick={() => setServerManager({ isOpen: true, mode: "create" })}
         >
           <Plus className="h-6 w-6" />
         </Button>
@@ -174,13 +177,34 @@ const MainChatApp: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-gray-800 border-gray-600">
-              <DropdownMenuItem className="text-white hover:bg-gray-700">
+              <DropdownMenuItem
+                className="text-white hover:bg-gray-700"
+                onClick={() => setServerManager({ isOpen: true, mode: "join" })}
+              >
                 <UserPlus className="h-4 w-4 mr-2" />
-                Invite People
+                Join Server
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-white hover:bg-gray-700">
+              <DropdownMenuItem
+                className="text-white hover:bg-gray-700"
+                onClick={() =>
+                  setServerManager({
+                    isOpen: true,
+                    mode: "manage",
+                    server: currentServer,
+                  })
+                }
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 Server Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-white hover:bg-gray-700"
+                onClick={() =>
+                  setServerManager({ isOpen: true, mode: "create" })
+                }
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Server
               </DropdownMenuItem>
               {currentUser?.isAdmin && (
                 <>
@@ -203,12 +227,19 @@ const MainChatApp: React.FC = () => {
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                   {category.name}
                 </span>
-                {currentUser?.isAdmin && (
+                {(currentUser?.isAdmin ||
+                  currentServer?.ownerId === currentUser?.id) && (
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-4 w-4 p-0 text-gray-400 hover:text-white"
-                    onClick={() => setShowChannelCreator(true)}
+                    onClick={() =>
+                      setServerManager({
+                        isOpen: true,
+                        mode: "manage",
+                        server: currentServer,
+                      })
+                    }
                   >
                     <Plus className="h-3 w-3" />
                   </Button>
@@ -512,6 +543,14 @@ const MainChatApp: React.FC = () => {
 
       {/* Profile Modal */}
       {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
+
+      {/* Server Manager Modal */}
+      <ServerManager
+        isOpen={serverManager.isOpen}
+        onClose={() => setServerManager((prev) => ({ ...prev, isOpen: false }))}
+        mode={serverManager.mode}
+        server={serverManager.server}
+      />
     </div>
   );
 };
