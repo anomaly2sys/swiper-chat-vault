@@ -155,12 +155,6 @@ const MainChatApp: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation Bar */}
-      <NavigationBar
-        onProfileClick={() => setShowProfile(true)}
-        notificationCount={3}
-      />
-
       {/* Main Content */}
       <div className="flex-1 flex">
         {/* Server Sidebar */}
