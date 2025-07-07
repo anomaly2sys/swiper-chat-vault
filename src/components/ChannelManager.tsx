@@ -148,8 +148,19 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
       const hasShop = channels.some((c) => c.type === "shop");
       if (hasShop) {
         toast({
-          title: "Cannot create channel",
+          title: "Shop channel exists",
           description: "Only one shop channel is allowed per server",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Check vendor role for shop creation
+      if (!hasVendorRole()) {
+        toast({
+          title: "Vendor role required",
+          description:
+            "You need vendor privileges to create shop channels. Use the button below to get access.",
           variant: "destructive",
         });
         return false;
