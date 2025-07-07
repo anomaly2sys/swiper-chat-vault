@@ -53,6 +53,8 @@ import UserContextMenu from "./UserContextMenu";
 import MessageControls from "./MessageControls";
 import RoleBadge from "./RoleBadge";
 import VoiceChatInterface from "./VoiceChatInterface";
+import ServerContextMenu from "./ServerContextMenu";
+import ChannelContextMenu from "./ChannelContextMenu";
 
 import { useNavigate } from "react-router-dom";
 
