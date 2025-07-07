@@ -478,11 +478,21 @@ const RoleManagement: React.FC = () => {
                         <SelectValue placeholder="Choose a user" />
                       </SelectTrigger>
                       <SelectContent>
-                        {allUsers.map((user) => (
-                          <SelectItem key={user.id} value={user.id.toString()}>
-                            {user.displayName} (@{user.username})
+                        {Array.isArray(allUsers) && allUsers.length > 0 ? (
+                          allUsers.map((user) => (
+                            <SelectItem
+                              key={user?.id || Math.random()}
+                              value={user?.id?.toString() || ""}
+                            >
+                              {user?.displayName || "Unknown"} (@
+                              {user?.username || "unknown"})
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="" disabled>
+                            No users available
                           </SelectItem>
-                        ))}
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
