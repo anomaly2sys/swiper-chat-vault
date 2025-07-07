@@ -122,12 +122,7 @@ const UnifiedAdminBot: React.FC = () => {
 **🔧 User Management:**
 • \`/users\` - List all registered users
 • \`/user [username]\` - Get detailed user information
-• \`/ban [username] [reason]\` - Ban a user from the platform
-• \`/unban [username]\` - Remove ban from user
-• \`/mute [username] [duration]\` - Mute a user (duration in minutes)
-• \`/unmute [username]\` - Remove mute from user
-• \`/kick [username]\` - Kick user from current server
-• \`/warn [username] [reason]\` - Issue warning to user
+• \`/online\` - Show all currently online users
 
 **🎭 Role Management:**
 • \`/roles list\` - Display all available roles
@@ -136,36 +131,16 @@ const UnifiedAdminBot: React.FC = () => {
 
 **📊 System Operations:**
 • \`/stats\` - Display comprehensive system statistics
-• \`/online\` - Show all currently online users
-• \`/servers\` - List all servers in the network
-• \`/channels [server_id]\` - Show channels for specific server
-• \`/messages [channel_id]\` - Get recent messages from channel
-
-**🔒 Security & Monitoring:**
-• \`/audit\` - Show recent audit log entries
-• \`/reports\` - View pending user reports
-• \`/security\` - Run security diagnostics
-• \`/encryption\` - Check encryption status
-
-**🗄️ Database Operations:**
 • \`/tables\` - List all database tables
-• \`/backup\` - Create system backup
-• \`/cleanup\` - Clean up expired data
-• \`/migrate\` - Run database migrations
+• \`/security\` - Run security diagnostics
 
-**⚡ Real-time Commands:**
-• \`/broadcast [message]\` - Send message to all users
-• \`/maintenance [on/off]\` - Toggle maintenance mode
-• \`/logs\` - View system logs
-• \`/restart\` - Restart specific services
+**ℹ️ Information:**
+• \`/help\` - Show this help message
 
-**💰 Commerce Features:**
-• \`/products\` - List all shop products
-• \`/tickets\` - View Bitcoin transaction tickets
-• \`/revenue\` - Show revenue statistics
+🔐 **All operations secured with military-grade quantum encryption**
 
-🔐 **All operations secured with military-grade quantum encryption**`,
-          data: { commandCount: 25, encryptionActive: true },
+**Note:** Only functional commands are listed. Type any command to execute it.`,
+          data: { commandCount: 8, encryptionActive: true },
         };
 
       case "stats":
