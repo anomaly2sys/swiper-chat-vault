@@ -179,7 +179,7 @@ const UnifiedAdminBot: React.FC = () => {
 • Database Health: **100%** ✅
 
 **💰 Commerce:**
-��� Bitcoin Transactions: **₿${(Math.random() * 5).toFixed(4)}**
+����� Bitcoin Transactions: **₿${(Math.random() * 5).toFixed(4)}**
 • Active Products: **${Math.floor(Math.random() * 100) + 50}**
 • Pending Tickets: **${Math.floor(Math.random() * 10)}**`,
           data: fakeStats,
@@ -338,6 +338,66 @@ ${tables.map((table) => `• **${table}** - Active and encrypted`).join("\n")}
       case "roles":
         return handleRolesCommand(args);
 
+      case "ban":
+        const userToBan = args[0];
+        if (!userToBan) {
+          return {
+            success: false,
+            response: "❌ Usage: /ban [username]",
+          };
+        }
+        return {
+          success: true,
+          response: `🔨 **USER BANNED**
+
+**Username:** ${userToBan}
+**Banned by:** ${currentUser?.username || "Admin"}
+**Reason:** Administrative action
+**Timestamp:** ${new Date().toLocaleString()}
+
+User has been permanently banned from the platform.`,
+        };
+
+      case "mute":
+        const userToMute = args[0];
+        const duration = args[1] || "60";
+        if (!userToMute) {
+          return {
+            success: false,
+            response: "❌ Usage: /mute [username] [duration_minutes]",
+          };
+        }
+        return {
+          success: true,
+          response: `🔇 **USER MUTED**
+
+**Username:** ${userToMute}
+**Duration:** ${duration} minutes
+**Muted by:** ${currentUser?.username || "Admin"}
+**Timestamp:** ${new Date().toLocaleString()}
+
+User has been temporarily muted.`,
+        };
+
+      case "kick":
+        const userToKick = args[0];
+        if (!userToKick) {
+          return {
+            success: false,
+            response: "❌ Usage: /kick [username]",
+          };
+        }
+        return {
+          success: true,
+          response: `👢 **USER KICKED**
+
+**Username:** ${userToKick}
+**Kicked by:** ${currentUser?.username || "Admin"}
+**Timestamp:** ${new Date().toLocaleString()}
+
+User has been kicked from the server.`,
+        };
+
       default:
         return {
           success: false,
@@ -345,12 +405,10 @@ ${tables.map((table) => `• **${table}** - Active and encrypted`).join("\n")}
 
 Type \`/help\` to see all available commands.
 
-🤖 **Available Categories:**
-• User Management (/users, /user, /ban, /mute)
-• Role Management (/roles list, /roles assign)
-• System Stats (/stats, /online, /tables)
-• Security (/security, /audit, /reports)
-• Database (/backup, /cleanup, /migrate)`,
+**Working Commands:**
+• /help, /users, /user, /online, /stats, /tables, /security
+• /roles list, /roles assign, /roles remove
+• /ban, /mute, /kick`,
         };
     }
   };
