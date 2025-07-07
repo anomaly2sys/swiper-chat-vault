@@ -355,6 +355,9 @@ ${tables.map((table) => `• **${table}** - Active and encrypted`).join("\n")}
           data: { username, active: true },
         };
 
+      case "roles":
+        return handleRolesCommand(args);
+
       default:
         return {
           success: false,
@@ -364,6 +367,7 @@ Type \`/help\` to see all available commands.
 
 🤖 **Available Categories:**
 • User Management (/users, /user, /ban, /mute)
+• Role Management (/roles list, /roles assign)
 • System Stats (/stats, /online, /tables)
 • Security (/security, /audit, /reports)
 • Database (/backup, /cleanup, /migrate)`,
