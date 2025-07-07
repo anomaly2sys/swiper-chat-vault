@@ -267,7 +267,7 @@ ${mockUsers
 
         return {
           success: true,
-          response: `🟢 **ONLINE USERS** (${onlineUsers.length} currently active)
+          response: `�� **ONLINE USERS** (${onlineUsers.length} currently active)
 
 ${onlineUsers.map((user) => `• @${user} - Active now`).join("\n")}
 
@@ -750,9 +750,10 @@ ${defaultRoles.map((r) => `• ${r.name}`).join("\n")}`,
           {[
             { cmd: "/help", icon: AlertCircle, label: "Help" },
             { cmd: "/users", icon: Users, label: "Users" },
+            { cmd: "/roles list", icon: Shield, label: "Roles" },
             { cmd: "/stats", icon: Activity, label: "Stats" },
             { cmd: "/tables", icon: Database, label: "Tables" },
-            { cmd: "/online", icon: Shield, label: "Online" },
+            { cmd: "/online", icon: Users, label: "Online" },
           ].map(({ cmd, icon: Icon, label }) => (
             <Button
               key={cmd}
