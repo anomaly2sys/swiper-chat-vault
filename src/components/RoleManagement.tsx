@@ -306,6 +306,40 @@ const RoleManagement: React.FC = () => {
     return roles.find((r) => r.id === roleId)?.name || "Unknown";
   };
 
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card className="bg-black/40 border-red-500/30">
+          <CardContent className="p-6">
+            <div className="text-center text-red-400">
+              <p>Error loading role management: {error}</p>
+              <Button
+                onClick={() => window.location.reload()}
+                className="mt-4 bg-red-600 hover:bg-red-700"
+              >
+                Reload Page
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card className="bg-black/40 border-purple-500/30">
+          <CardContent className="p-6">
+            <div className="text-center text-gray-400">
+              <p>Loading role management...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Role Management */}
