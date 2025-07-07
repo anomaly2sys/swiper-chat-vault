@@ -174,19 +174,24 @@ const MainChatApp: React.FC = () => {
         {/* Server Sidebar */}
         <div className="w-16 bg-black/40 backdrop-blur-xl border-r border-purple-500/30 flex flex-col items-center py-3">
           {servers.map((server) => (
-            <Button
+            <ServerContextMenu
               key={server.id}
-              variant="ghost"
-              size="sm"
-              className={`w-12 h-12 rounded-full mb-2 text-lg ${
-                currentServer?.id === server.id
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
-              onClick={() => setCurrentServer(server)}
+              server={server}
+              userRole={getUserRole(server, currentUser?.id)}
             >
-              {server.icon || server.name.charAt(0)}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`w-12 h-12 rounded-full mb-2 text-lg ${
+                  currentServer?.id === server.id
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+                onClick={() => setCurrentServer(server)}
+              >
+                {server.icon || server.name.charAt(0)}
+              </Button>
+            </ServerContextMenu>
           ))}
 
           <Button
