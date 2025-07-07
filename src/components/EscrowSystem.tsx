@@ -199,16 +199,6 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
     return Math.floor(amount * feePercentage);
   };
 
-  const generateBitcoinAddress = (): string => {
-    // Generate a fake Bitcoin address for demo
-    const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-    let result = "1";
-    for (let i = 0; i < 33; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
   const createEscrowTransaction = async () => {
     if (
       !currentUser ||
