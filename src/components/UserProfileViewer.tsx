@@ -133,7 +133,19 @@ const UserProfileViewer: React.FC<UserProfileViewerProps> = ({
       if (user) {
         // Transform user data to profile format with additional stats
         const profile: UserProfile = {
-          ...user,
+          id: user.id.toString(),
+          username: user.username,
+          displayName: user.displayName,
+          email: user.email || undefined,
+          phone: user.phone || undefined,
+          bio: user.bio,
+          profilePicture: user.profilePicture,
+          isAdmin: user.isAdmin,
+          status: user.status,
+          joinedAt: user.joinedAt,
+          lastSeen: user.lastSeen,
+          location: user.isAdmin ? "Server Administration" : undefined,
+          timezone: "UTC-5 (EST)",
           roles: user.isAdmin ? ["Administrator"] : ["Member"],
           stats: {
             messagesCount: Math.floor(Math.random() * 1000) + 50,
