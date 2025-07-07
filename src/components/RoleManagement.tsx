@@ -58,6 +58,13 @@ const DEFAULT_ROLES: Role[] = [
     isDefault: true,
   },
   {
+    id: "empire-elite",
+    name: "Empire Elite",
+    color: "#9D4EDD",
+    position: 95,
+    isDefault: true,
+  },
+  {
     id: "verified-vendor",
     name: "Verified Vendor",
     color: "#00FF00",
