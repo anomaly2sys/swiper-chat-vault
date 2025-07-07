@@ -301,29 +301,34 @@ const MainChatApp: React.FC = () => {
                   {category.channels
                     .filter((channel) => canAccessChannel(channel, currentUser))
                     .map((channel) => (
-                      <Button
+                      <ChannelContextMenu
                         key={channel.id}
-                        variant="ghost"
-                        className={`w-full justify-start mb-1 ${
-                          currentChannel?.id === channel.id
-                            ? "bg-purple-500/20 text-white"
-                            : "text-gray-300 hover:bg-gray-700"
-                        }`}
-                        onClick={() => {
-                          setCurrentChannel(channel);
-                          setSelectedDM(null);
-                        }}
+                        channel={channel}
+                        userRole={getUserRole(currentServer, currentUser?.id)}
                       >
-                        {channel.type === "text" ? (
-                          <Hash className="h-4 w-4 mr-2" />
-                        ) : (
-                          <Volume2 className="h-4 w-4 mr-2" />
-                        )}
-                        {channel.name}
-                        {channel.name === "admin-console" && (
-                          <Crown className="h-3 w-3 ml-auto text-yellow-500" />
-                        )}
-                      </Button>
+                        <Button
+                          variant="ghost"
+                          className={`w-full justify-start mb-1 ${
+                            currentChannel?.id === channel.id
+                              ? "bg-purple-500/20 text-white"
+                              : "text-gray-300 hover:bg-gray-700"
+                          }`}
+                          onClick={() => {
+                            setCurrentChannel(channel);
+                            setSelectedDM(null);
+                          }}
+                        >
+                          {channel.type === "text" ? (
+                            <Hash className="h-4 w-4 mr-2" />
+                          ) : (
+                            <Volume2 className="h-4 w-4 mr-2" />
+                          )}
+                          {channel.name}
+                          {channel.name === "admin-console" && (
+                            <Crown className="h-3 w-3 ml-auto text-yellow-500" />
+                          )}
+                        </Button>
+                      </ChannelContextMenu>
                     ))}
                 </div>
               ))}
