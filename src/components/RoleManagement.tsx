@@ -130,7 +130,7 @@ const RoleManagement: React.FC = () => {
 
   const [allUsers, setAllUsers] = useState<any[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       const users = getAllUsers();
       setAllUsers(users);
@@ -140,11 +140,11 @@ const RoleManagement: React.FC = () => {
     }
   }, [getAllUsers]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("swiperEmpire_roles", JSON.stringify(roles));
   }, [roles]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("swiperEmpire_userRoles", JSON.stringify(userRoles));
   }, [userRoles]);
 
