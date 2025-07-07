@@ -129,15 +129,30 @@ const RoleManagement: React.FC = () => {
   const { toast } = useToast();
 
   const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const users = getAllUsers();
-      setAllUsers(users);
-    } catch (error) {
-      console.error("Error getting users:", error);
-      setAllUsers([]);
-    }
+    const loadUsers = () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        if (typeof getAllUsers === "function") {
+          const users = getAllUsers();
+          setAllUsers(Array.isArray(users) ? users : []);
+        } else {
+          setAllUsers([]);
+        }
+      } catch (error) {
+        console.error("Error getting users:", error);
+        setError("Failed to load users");
+        setAllUsers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUsers();
   }, [getAllUsers]);
 
   useEffect(() => {
