@@ -610,15 +610,51 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
                       {selectedTransaction.status === "pending" &&
                         selectedTransaction.buyerId === currentUser.id && (
                           <Button
-                            onClick={() =>
-                              updateTransactionStatus(
-                                selectedTransaction.id,
-                                "funded",
-                              )
-                            }
+                            onClick={() => {
+                              // Add a system message about funding
+                              const fundMessage: EscrowMessage = {
+                                id: `msg-${Date.now()}`,
+                                userId: 0,
+                                username: "Escrow System",
+                                content: `✅ Escrow funded! ${formatBitcoin(selectedTransaction.amount + selectedTransaction.fee)} received at escrow address. Seller can now deliver the product.`,
+                                timestamp: new Date(),
+                                isSystem: true,
+                              };
+
+                              const updatedTransactions = transactions.map(
+                                (tx) => {
+                                  if (tx.id === selectedTransaction.id) {
+                                    return {
+                                      ...tx,
+                                      messages: [...tx.messages, fundMessage],
+                                      status: "funded" as const,
+                                      fundedAt: new Date(),
+                                    };
+                                  }
+                                  return tx;
+                                },
+                              );
+
+                              setTransactions(updatedTransactions);
+                              localStorage.setItem(
+                                "swiperEmpire_escrowTransactions",
+                                JSON.stringify(updatedTransactions),
+                              );
+
+                              setSelectedTransaction({
+                                ...selectedTransaction,
+                                status: "funded",
+                                fundedAt: new Date(),
+                              });
+
+                              toast({
+                                title: "Escrow Funded!",
+                                description: `${formatBitcoin(selectedTransaction.amount + selectedTransaction.fee)} successfully deposited to escrow`,
+                              });
+                            }}
                             className="bg-blue-600 hover:bg-blue-700"
                           >
-                            Mark as Funded
+                            🔒 Fund Escrow
                           </Button>
                         )}
 
