@@ -267,7 +267,7 @@ ${mockUsers
 
         return {
           success: true,
-          response: `�� **ONLINE USERS** (${onlineUsers.length} currently active)
+          response: `🟢 **ONLINE USERS** (${onlineUsers.length} currently active)
 
 ${onlineUsers.map((user) => `• @${user} - Active now`).join("\n")}
 
@@ -744,30 +744,6 @@ ${defaultRoles.map((r) => `• ${r.name}`).join("\n")}`,
             )}
           </Button>
         </form>
-
-        {/* Quick Commands */}
-        <div className="flex flex-wrap gap-2">
-          {[
-            { cmd: "/help", icon: AlertCircle, label: "Help" },
-            { cmd: "/users", icon: Users, label: "Users" },
-            { cmd: "/roles list", icon: Shield, label: "Roles" },
-            { cmd: "/stats", icon: Activity, label: "Stats" },
-            { cmd: "/tables", icon: Database, label: "Tables" },
-            { cmd: "/online", icon: Users, label: "Online" },
-          ].map(({ cmd, icon: Icon, label }) => (
-            <Button
-              key={cmd}
-              variant="outline"
-              size="sm"
-              onClick={() => setInputValue(cmd)}
-              className="border-gray-600 hover:bg-gray-700 text-xs"
-              disabled={isLoading}
-            >
-              <Icon className="h-3 w-3 mr-1" />
-              {label}
-            </Button>
-          ))}
-        </div>
       </CardContent>
     </Card>
   );
