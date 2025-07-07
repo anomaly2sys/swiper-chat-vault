@@ -145,13 +145,19 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
         (m) => m.userId === currentUser.id,
       );
       if (!isAlreadyMember) {
+        // Use actual user join date for admin, or current date for new users
+        const joinDate =
+          currentUser.isAdmin && currentUser.username === "blankbank"
+            ? currentUser.joinedAt
+            : new Date();
+
         const newMember: ServerMember = {
           userId: currentUser.id,
           serverId: defaultServer.id,
           roles: [
             defaultServer.roles.find((r) => r.name === "@everyone")?.id || "",
           ],
-          joinedAt: new Date(),
+          joinedAt: joinDate,
           isMuted: false,
           isBanned: false,
         };
