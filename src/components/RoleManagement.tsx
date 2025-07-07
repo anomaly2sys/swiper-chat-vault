@@ -222,8 +222,7 @@ const RoleManagement: React.FC = () => {
       return;
     }
 
-    const users = await getAllUsers();
-    const user = users.find((u) => u.id.toString() === selectedUser);
+    const user = allUsers.find((u) => u.id.toString() === selectedUser);
     if (!user) return;
 
     const existingUserRole = userRoles.find((ur) => ur.userId === user.id);
