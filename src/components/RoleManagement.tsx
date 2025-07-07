@@ -128,6 +128,18 @@ const RoleManagement: React.FC = () => {
   const { currentUser, getAllUsers } = useAuth();
   const { toast } = useToast();
 
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    try {
+      const users = getAllUsers();
+      setAllUsers(users);
+    } catch (error) {
+      console.error("Error getting users:", error);
+      setAllUsers([]);
+    }
+  }, [getAllUsers]);
+
   React.useEffect(() => {
     localStorage.setItem("swiperEmpire_roles", JSON.stringify(roles));
   }, [roles]);
