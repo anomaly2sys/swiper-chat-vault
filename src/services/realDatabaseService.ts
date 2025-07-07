@@ -1,4 +1,5 @@
-import { User, Message, Server, Channel } from "@/contexts/ChatContext";
+import { User } from "@/contexts/AuthContext";
+import { Message, Server, Channel } from "@/contexts/ChatContext";
 
 class RealDatabaseService {
   private baseUrl = "/.netlify/functions";

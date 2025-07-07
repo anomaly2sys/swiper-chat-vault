@@ -33,6 +33,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePermissions } from "@/hooks/usePermissions";
 import {
   Channel,
   ChannelType,
@@ -65,44 +66,12 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
   });
   const { currentUser } = useAuth();
   const { toast } = useToast();
+  const permissions = usePermissions(serverId, userRole);
 
-  const canManageChannels = userRole === "owner" || userRole === "moderator";
+  const canManageChannels = permissions.canCreateChannels;
 
   const hasVendorRole = () => {
-    // ALWAYS allow admins to create shop channels
-    if (currentUser?.isAdmin) {
-      console.log("✅ Admin access granted for shop channels");
-      return true;
-    }
-
-    // Owner automatically has vendor roles
-    if (userRole === "owner") {
-      console.log("✅ Server owner access granted for shop channels");
-      return true;
-    }
-
-    // Check user roles from localStorage
-    const userRoles = JSON.parse(
-      localStorage.getItem("swiperEmpire_userRoles") || "[]",
-    );
-    const currentUserRoles = userRoles.find(
-      (ur: any) => ur.userId === currentUser?.id,
-    );
-
-    const hasVendor =
-      currentUserRoles?.roles?.includes("vendor") ||
-      currentUserRoles?.roles?.includes("verified-vendor");
-
-    console.log("🔍 Shop Channel Access Check:", {
-      isAdmin: currentUser?.isAdmin,
-      userRole,
-      userId: currentUser?.id,
-      currentUserRoles: currentUserRoles?.roles || [],
-      hasVendor,
-      finalResult: hasVendor,
-    });
-
-    return hasVendor;
+    return permissions.canCreateShopChannels;
   };
 
   const getChannelIcon = (type: ChannelType) => {

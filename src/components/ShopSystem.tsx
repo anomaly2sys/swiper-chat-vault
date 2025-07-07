@@ -67,13 +67,28 @@ const ShopSystem: React.FC<ShopSystemProps> = ({
   const { currentUser } = useAuth();
   const { toast } = useToast();
 
-  const canManageProducts = userRole === "owner";
+  // Enhanced permissions - vendors, verified vendors, owners, and site admin can manage products
+  const canManageProducts = 
+    userRole === "owner" || 
+    currentUser?.isAdmin || // Site admin can manage any shop
+    (() => {
+      const userRoles = JSON.parse(
+        localStorage.getItem("swiperEmpire_userRoles") || "[]"
+      );
+      const currentUserRoles = userRoles.find(
+        (ur: any) => ur.userId === currentUser?.id
+      );
+      return (
+        currentUserRoles?.roles?.includes("vendor") ||
+        currentUserRoles?.roles?.includes("verified-vendor")
+      );
+    })();
 
   const handleCreateProduct = () => {
     if (!canManageProducts) {
       toast({
         title: "Access denied",
-        description: "Only server owners can create products",
+        description: "You need vendor privileges or server ownership to create products",
         variant: "destructive",
       });
       return;
@@ -356,10 +371,10 @@ const ShopSystem: React.FC<ShopSystemProps> = ({
           <div className="flex flex-col items-center justify-center h-64 text-gray-400">
             <ShoppingCart className="h-16 w-16 mb-4 text-gray-600" />
             <h3 className="text-lg font-medium mb-2">No products available</h3>
-            <p className="text-sm text-center">
+             <p className="text-sm text-center">
               {canManageProducts
                 ? "Create your first product to start selling in this server"
-                : "The server owner hasn't added any products yet"}
+                : "No products available yet. Vendors can add products to sell here."}
             </p>
           </div>
         )}
