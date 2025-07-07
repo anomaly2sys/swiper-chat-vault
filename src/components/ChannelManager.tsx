@@ -295,13 +295,14 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
 
       {/* Create Channel Button */}
       {canManageChannels && (
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogTrigger asChild>
-            <Button className="w-full bg-purple-600 hover:bg-purple-700">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Channel
-            </Button>
-          </DialogTrigger>
+        <div className="space-y-2">
+          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+            <DialogTrigger asChild>
+              <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Channel
+              </Button>
+            </DialogTrigger>
           <DialogContent className="bg-black/90 border-purple-500/30">
             <DialogHeader>
               <DialogTitle className="text-white">
