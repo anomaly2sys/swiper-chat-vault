@@ -88,6 +88,17 @@ const MainChatApp: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Helper function to get user role in a server
+  const getUserRole = (server: any, userId: string | undefined): string => {
+    if (!server || !userId) return "member";
+    if (server.ownerId === userId) return "owner";
+
+    const member = server.members?.find((m: any) => m.userId === userId);
+    if (member?.roles?.includes("moderator")) return "moderator";
+
+    return "member";
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, directMessages]);
