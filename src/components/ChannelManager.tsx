@@ -303,141 +303,186 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
                 Create Channel
               </Button>
             </DialogTrigger>
-          <DialogContent className="bg-black/90 border-purple-500/30">
-            <DialogHeader>
-              <DialogTitle className="text-white">
-                Create New Channel
-              </DialogTitle>
-            </DialogHeader>
+            <DialogContent className="bg-black/90 border-purple-500/30">
+              <DialogHeader>
+                <DialogTitle className="text-white">
+                  Create New Channel
+                </DialogTitle>
+              </DialogHeader>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-gray-300">Channel Type</Label>
-                <Select
-                  value={newChannelData.type}
-                  onValueChange={(value: ChannelType) =>
-                    setNewChannelData((prev) => ({ ...prev, type: value }))
-                  }
-                >
-                  <SelectTrigger className="bg-gray-800 border-gray-600">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="text">
-                      <div className="flex items-center space-x-2">
-                        <Hash className="h-4 w-4" />
-                        <span>Text Channel</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="voice">
-                      <div className="flex items-center space-x-2">
-                        <Volume2 className="h-4 w-4" />
-                        <span>Voice Channel</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem
-                      value="announcements"
-                      disabled={channels.some(
-                        (c) => c.type === "announcements",
-                      )}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <Megaphone className="h-4 w-4" />
-                        <span>Announcements (One per server)</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem
-                      value="shop"
-                      disabled={
-                        channels.some((c) => c.type === "shop") ||
-                        !hasVendorRole()
-                      }
-                    >
-                      <div className="flex items-center space-x-2">
-                        <ShoppingCart className="h-4 w-4" />
-                        <span>Shop (Owner + Vendor role only)</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-gray-300">Channel Name</Label>
-                <Input
-                  value={newChannelData.name}
-                  onChange={(e) =>
-                    setNewChannelData((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  placeholder={
-                    newChannelData.type === "shop"
-                      ? "Shop (cannot be changed)"
-                      : "Enter channel name"
-                  }
-                  disabled={newChannelData.type === "shop"}
-                  className="bg-gray-800 border-gray-600 text-white"
-                />
-                {newChannelData.type === "shop" && (
-                  <p className="text-xs text-gray-400">
-                    Shop channels are automatically named "Shop"
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-gray-300">Description (Optional)</Label>
-                <Textarea
-                  value={newChannelData.description}
-                  onChange={(e) =>
-                    setNewChannelData((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  placeholder="Enter channel description"
-                  className="bg-gray-800 border-gray-600 text-white"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-gray-300">Private Channel</Label>
-                  <p className="text-sm text-gray-400">
-                    Only visible to specific roles
-                  </p>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-300">Channel Type</Label>
+                  <Select
+                    value={newChannelData.type}
+                    onValueChange={(value: ChannelType) =>
+                      setNewChannelData((prev) => ({ ...prev, type: value }))
+                    }
+                  >
+                    <SelectTrigger className="bg-gray-800 border-gray-600">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="text">
+                        <div className="flex items-center space-x-2">
+                          <Hash className="h-4 w-4" />
+                          <span>Text Channel</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="voice">
+                        <div className="flex items-center space-x-2">
+                          <Volume2 className="h-4 w-4" />
+                          <span>Voice Channel</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem
+                        value="announcements"
+                        disabled={channels.some(
+                          (c) => c.type === "announcements",
+                        )}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <Megaphone className="h-4 w-4" />
+                          <span>Announcements (One per server)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem
+                        value="shop"
+                        disabled={
+                          channels.some((c) => c.type === "shop") ||
+                          !hasVendorRole()
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <ShoppingCart className="h-4 w-4" />
+                          <span>Shop (Owner + Vendor role only)</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Switch
-                  checked={newChannelData.isPrivate}
-                  onCheckedChange={(checked) =>
-                    setNewChannelData((prev) => ({
-                      ...prev,
-                      isPrivate: checked,
-                    }))
-                  }
-                />
-              </div>
 
-              <div className="flex justify-end space-x-2 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowCreateDialog(false)}
-                  className="border-gray-600"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateChannel}
-                  className="bg-purple-600 hover:bg-purple-700"
-                >
-                  Create Channel
-                </Button>
+                <div className="space-y-2">
+                  <Label className="text-gray-300">Channel Name</Label>
+                  <Input
+                    value={newChannelData.name}
+                    onChange={(e) =>
+                      setNewChannelData((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                    placeholder={
+                      newChannelData.type === "shop"
+                        ? "Shop (cannot be changed)"
+                        : "Enter channel name"
+                    }
+                    disabled={newChannelData.type === "shop"}
+                    className="bg-gray-800 border-gray-600 text-white"
+                  />
+                  {newChannelData.type === "shop" && (
+                    <p className="text-xs text-gray-400">
+                      Shop channels are automatically named "Shop"
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-gray-300">
+                    Description (Optional)
+                  </Label>
+                  <Textarea
+                    value={newChannelData.description}
+                    onChange={(e) =>
+                      setNewChannelData((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter channel description"
+                    className="bg-gray-800 border-gray-600 text-white"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="text-gray-300">Private Channel</Label>
+                    <p className="text-sm text-gray-400">
+                      Only visible to specific roles
+                    </p>
+                  </div>
+                  <Switch
+                    checked={newChannelData.isPrivate}
+                    onCheckedChange={(checked) =>
+                      setNewChannelData((prev) => ({
+                        ...prev,
+                        isPrivate: checked,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowCreateDialog(false)}
+                    className="border-gray-600"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleCreateChannel}
+                    className="bg-purple-600 hover:bg-purple-700"
+                  >
+                    Create Channel
+                  </Button>
+                </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+
+          {!hasVendorRole() && currentUser?.isAdmin && (
+            <Button
+              onClick={() => {
+                // Force assign verified-vendor role for testing
+                const userRoles = JSON.parse(
+                  localStorage.getItem("swiperEmpire_userRoles") || "[]",
+                );
+                let userRole = userRoles.find(
+                  (ur: any) => ur.userId === currentUser.id,
+                );
+
+                if (!userRole) {
+                  userRole = {
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    displayName: currentUser.displayName,
+                    roles: [],
+                  };
+                  userRoles.push(userRole);
+                }
+
+                if (!userRole.roles.includes("verified-vendor")) {
+                  userRole.roles.push("verified-vendor");
+                  localStorage.setItem(
+                    "swiperEmpire_userRoles",
+                    JSON.stringify(userRoles),
+                  );
+                  toast({
+                    title: "Role assigned",
+                    description:
+                      "Verified vendor role added - you can now create shop channels!",
+                  });
+                  // Force refresh of hasVendorRole check
+                  window.location.reload();
+                }
+              }}
+              className="w-full bg-green-600 hover:bg-green-700 text-sm"
+            >
+              🛒 Get Vendor Role (for shop channels)
+            </Button>
+          )}
+        </div>
       )}
     </div>
   );
