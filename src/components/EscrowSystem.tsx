@@ -146,10 +146,10 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
           })),
         }));
       } catch {
-        return getDemoTransactions();
+        return [];
       }
     }
-    return getDemoTransactions();
+    return [];
   });
 
   const [selectedTransaction, setSelectedTransaction] =
