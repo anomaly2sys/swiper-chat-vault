@@ -123,6 +123,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
       bio: currentUser?.bio || "",
       email: currentUser?.email || "",
       phone: currentUser?.phone || "",
+      profilePicture: currentUser?.profilePicture || "",
     });
     setIsEditing(false);
   };
