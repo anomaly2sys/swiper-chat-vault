@@ -113,7 +113,7 @@ const EnhancedMainApp: React.FC = () => {
 
       {/* Main Content Area */}
       <div className="h-[calc(100vh-80px)]">
-        {currentView === "chat" ? <MainChatApp /> : <EnhancedAdminDashboard />}
+        {currentView === "chat" ? <MainChatApp /> : <AdminNavigation />}
       </div>
 
       {/* Profile Popup */}
