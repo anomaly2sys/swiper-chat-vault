@@ -87,24 +87,7 @@ const AdminNavigation: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-purple-300">0%</p>
-                      <p className="text-gray-400 text-sm">Empire Elite Fees</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-yellow-300">3%</p>
-                      <p className="text-gray-400 text-sm">
-                        Verified Vendor Fees
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-red-300">7%</p>
-                      <p className="text-gray-400 text-sm">
-                        Regular Vendor Fees
-                      </p>
-                    </div>
-                  </div>
+                  <FeeManagementSystem />
                 </div>
               </CardContent>
             </Card>
