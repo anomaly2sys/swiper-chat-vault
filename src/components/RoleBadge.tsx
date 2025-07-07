@@ -1,6 +1,7 @@
 import React from "react";
-import { Crown, Shield, Star, Award, User } from "lucide-react";
+import { Crown, Shield, Star, Award, User, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import EmpireEliteBadge from "./EmpireEliteBadge";
 
 interface RoleBadgeProps {
   username: string;
