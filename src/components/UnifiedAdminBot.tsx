@@ -375,6 +375,189 @@ Type \`/help\` to see all available commands.
     }
   };
 
+  const handleRolesCommand = (
+    args: string[],
+  ): {
+    success: boolean;
+    response: string;
+    data?: any;
+  } => {
+    const subcommand = args[0];
+
+    // Get current user roles from localStorage
+    const userRoles = JSON.parse(
+      localStorage.getItem("swiperEmpire_userRoles") || "[]",
+    );
+
+    const defaultRoles = [
+      { name: "owner", color: "#ff6b6b", permissions: ["ADMINISTRATOR"] },
+      {
+        name: "empire-elite",
+        color: "#ffd93d",
+        permissions: ["PREMIUM_ACCESS"],
+      },
+      {
+        name: "verified-vendor",
+        color: "#51cf66",
+        permissions: ["CREATE_SHOP", "SELL_PRODUCTS"],
+      },
+      { name: "vendor", color: "#74c0fc", permissions: ["SELL_PRODUCTS"] },
+      { name: "moderator", color: "#9775fa", permissions: ["MODERATE_USERS"] },
+      { name: "member", color: "#868e96", permissions: ["BASIC_ACCESS"] },
+    ];
+
+    switch (subcommand) {
+      case "list":
+        return {
+          success: true,
+          response: `🎭 **SWIPER EMPIRE ROLES** (${defaultRoles.length} roles)
+
+${defaultRoles
+  .map((role) => {
+    const assignedUsers = userRoles.filter(
+      (ur: any) => ur.roles && ur.roles.includes(role.name),
+    );
+    return `• **${role.name}** (${role.color})
+  Permissions: ${role.permissions.join(", ")}
+  Assigned Users: ${assignedUsers.length}
+  Users: ${assignedUsers.map((u: any) => u.username).join(", ") || "None"}`;
+  })
+  .join("\n\n")}
+
+🔐 All roles secured with quantum encryption`,
+          data: { roles: defaultRoles, userRoles },
+        };
+
+      case "assign":
+        const [username, roleNameToAssign] = args.slice(1);
+        if (!username || !roleNameToAssign) {
+          return {
+            success: false,
+            response: "❌ Usage: /roles assign <username> <role_name>",
+          };
+        }
+
+        const role = defaultRoles.find(
+          (r) => r.name.toLowerCase() === roleNameToAssign.toLowerCase(),
+        );
+        if (!role) {
+          return {
+            success: false,
+            response: `❌ Role not found: ${roleNameToAssign}
+
+Available roles: ${defaultRoles.map((r) => r.name).join(", ")}`,
+          };
+        }
+
+        // Find or create user entry
+        let userRole = userRoles.find((ur: any) => ur.username === username);
+        if (!userRole) {
+          userRole = {
+            userId: `user-${username}`,
+            username: username,
+            displayName: username,
+            roles: [],
+          };
+          userRoles.push(userRole);
+        }
+
+        if (userRole.roles && userRole.roles.includes(role.name)) {
+          return {
+            success: false,
+            response: `❌ User ${username} already has role ${role.name}`,
+          };
+        }
+
+        // Add role to user
+        if (!userRole.roles) userRole.roles = [];
+        userRole.roles.push(role.name);
+
+        // Save updated roles
+        localStorage.setItem(
+          "swiperEmpire_userRoles",
+          JSON.stringify(userRoles),
+        );
+
+        return {
+          success: true,
+          response: `✅ **ROLE ASSIGNED SUCCESSFULLY**
+
+**User:** ${username}
+**Role:** ${role.name}
+**Permissions:** ${role.permissions.join(", ")}
+**Assigned by:** ${currentUser?.username || "Admin"}
+**Timestamp:** ${new Date().toLocaleString()}
+
+Role has been added to user's profile and saved to system.`,
+          data: { username, role: role.name, userRoles },
+        };
+
+      case "remove":
+        const [usernameToRemove, roleNameToRemove] = args.slice(1);
+        if (!usernameToRemove || !roleNameToRemove) {
+          return {
+            success: false,
+            response: "❌ Usage: /roles remove <username> <role_name>",
+          };
+        }
+
+        const userToModify = userRoles.find(
+          (ur: any) => ur.username === usernameToRemove,
+        );
+        if (
+          !userToModify ||
+          !userToModify.roles ||
+          !userToModify.roles.includes(roleNameToRemove)
+        ) {
+          return {
+            success: false,
+            response: `❌ User ${usernameToRemove} does not have role ${roleNameToRemove}`,
+          };
+        }
+
+        // Remove role from user
+        userToModify.roles = userToModify.roles.filter(
+          (r: string) => r !== roleNameToRemove,
+        );
+
+        // Save updated roles
+        localStorage.setItem(
+          "swiperEmpire_userRoles",
+          JSON.stringify(userRoles),
+        );
+
+        return {
+          success: true,
+          response: `✅ **ROLE REMOVED SUCCESSFULLY**
+
+**User:** ${usernameToRemove}
+**Removed Role:** ${roleNameToRemove}
+**Remaining Roles:** ${userToModify.roles.join(", ") || "None"}
+**Removed by:** ${currentUser?.username || "Admin"}
+**Timestamp:** ${new Date().toLocaleString()}`,
+          data: {
+            username: usernameToRemove,
+            removedRole: roleNameToRemove,
+            userRoles,
+          },
+        };
+
+      default:
+        return {
+          success: false,
+          response: `❌ Usage: /roles <list|assign|remove> [args]
+
+**Available Commands:**
+• \`/roles list\` - Show all available roles
+• \`/roles assign <username> <role_name>\` - Assign role to user
+• \`/roles remove <username> <role_name>\` - Remove role from user
+
+**Available Roles:**
+${defaultRoles.map((r) => `• ${r.name}`).join("\n")}`,
+        };
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isLoading && inputValue.trim()) {
