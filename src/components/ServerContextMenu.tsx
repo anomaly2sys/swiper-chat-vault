@@ -80,12 +80,28 @@ const ServerContextMenu: React.FC<ServerContextMenuProps> = ({
       <ContextMenuContent className="bg-black/90 border-purple-500/30 backdrop-blur-xl">
         {isOwner && (
           <>
-            <ContextMenuItem className="text-gray-300">
+            <ContextMenuItem
+              className="text-gray-300 hover:text-white hover:bg-gray-700"
+              onClick={() => {
+                toast({
+                  title: "Server Settings",
+                  description: `Opening settings for ${server.name}`,
+                });
+              }}
+            >
               <Settings className="h-4 w-4 mr-2" />
               Server Settings
             </ContextMenuItem>
 
-            <ContextMenuItem className="text-gray-300">
+            <ContextMenuItem
+              className="text-gray-300 hover:text-white hover:bg-gray-700"
+              onClick={() => {
+                toast({
+                  title: "Manage Members",
+                  description: `Managing members for ${server.name}`,
+                });
+              }}
+            >
               <Users className="h-4 w-4 mr-2" />
               Manage Members
             </ContextMenuItem>
