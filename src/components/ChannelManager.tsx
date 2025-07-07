@@ -441,7 +441,15 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
             </DialogContent>
           </Dialog>
 
-          {!hasVendorRole() && currentUser?.isAdmin && (
+          {/* Debug info */}
+          <div className="text-xs text-gray-400 p-2 bg-gray-800/50 rounded">
+            <div>User Role: {userRole}</div>
+            <div>Is Admin: {currentUser?.isAdmin ? "Yes" : "No"}</div>
+            <div>Has Vendor Role: {hasVendorRole() ? "Yes" : "No"}</div>
+            <div>Current User ID: {currentUser?.id}</div>
+          </div>
+
+          {!hasVendorRole() && (
             <Button
               onClick={() => {
                 // Force assign verified-vendor role for testing
