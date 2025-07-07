@@ -435,9 +435,11 @@ const MainChatApp: React.FC = () => {
             )}
           </div>
 
-          {/* Messages / Admin Bot */}
+          {/* Messages / Admin Bot / Voice Chat */}
           {isAdminChannel ? (
             <UnifiedAdminBot />
+          ) : currentChannel?.type === "voice" ? (
+            <VoiceChatInterface channelName={currentChannel.name} />
           ) : (
             <ScrollArea className="flex-1 p-4">
               {(selectedDM
