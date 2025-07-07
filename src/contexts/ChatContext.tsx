@@ -151,16 +151,61 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
             ? currentUser.joinedAt
             : new Date();
 
+        // Auto-assign all roles to admin users (blankbank)
+        const memberRoles =
+          currentUser.isAdmin && currentUser.username === "blankbank"
+            ? [
+                "owner",
+                "empire-elite",
+                "verified-vendor",
+                "vendor",
+                "moderator",
+                "member",
+              ]
+            : [
+                defaultServer.roles.find((r) => r.name === "@everyone")?.id ||
+                  "",
+              ];
+
         const newMember: ServerMember = {
           userId: currentUser.id,
           serverId: defaultServer.id,
-          roles: [
-            defaultServer.roles.find((r) => r.name === "@everyone")?.id || "",
-          ],
+          roles: memberRoles,
           joinedAt: joinDate,
           isMuted: false,
           isBanned: false,
         };
+
+        // Also save user roles to localStorage
+        if (currentUser.isAdmin && currentUser.username === "blankbank") {
+          const userRoles = JSON.parse(
+            localStorage.getItem("swiperEmpire_userRoles") || "[]",
+          );
+          const existingUserRole = userRoles.find(
+            (ur: any) => ur.userId === currentUser.id,
+          );
+
+          if (!existingUserRole) {
+            const adminUserRole = {
+              userId: currentUser.id,
+              username: currentUser.username,
+              displayName: currentUser.displayName,
+              roles: [
+                "owner",
+                "empire-elite",
+                "verified-vendor",
+                "vendor",
+                "moderator",
+                "member",
+              ],
+            };
+            userRoles.push(adminUserRole);
+            localStorage.setItem(
+              "swiperEmpire_userRoles",
+              JSON.stringify(userRoles),
+            );
+          }
+        }
 
         setServers((prev) =>
           prev.map((s) =>
