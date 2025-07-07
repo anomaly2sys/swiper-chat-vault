@@ -399,6 +399,12 @@ const MainChatApp: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-white"
+                  onClick={() => {
+                    toast({
+                      title: "Notifications",
+                      description: "No new notifications",
+                    });
+                  }}
                 >
                   <Bell className="h-4 w-4" />
                 </Button>
@@ -406,6 +412,12 @@ const MainChatApp: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-white"
+                  onClick={() => {
+                    toast({
+                      title: "Search",
+                      description: "Search functionality coming soon",
+                    });
+                  }}
                 >
                   <Search className="h-4 w-4" />
                 </Button>
@@ -413,6 +425,12 @@ const MainChatApp: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-white"
+                  onClick={() => {
+                    toast({
+                      title: "Members List",
+                      description: `${currentServer?.members?.length || 0} members online`,
+                    });
+                  }}
                 >
                   <Users className="h-4 w-4" />
                 </Button>
