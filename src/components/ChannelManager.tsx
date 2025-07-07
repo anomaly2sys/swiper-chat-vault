@@ -310,11 +310,14 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
                     </SelectItem>
                     <SelectItem
                       value="shop"
-                      disabled={channels.some((c) => c.type === "shop")}
+                      disabled={
+                        channels.some((c) => c.type === "shop") ||
+                        !hasVendorRole()
+                      }
                     >
                       <div className="flex items-center space-x-2">
                         <ShoppingCart className="h-4 w-4" />
-                        <span>Shop (One per server)</span>
+                        <span>Shop (Owner + Vendor role only)</span>
                       </div>
                     </SelectItem>
                   </SelectContent>
