@@ -143,7 +143,7 @@ const UnifiedAdminBot: React.FC = () => {
 🔐 **All operations secured with military-grade quantum encryption**
 
 **Note:** Only functional commands are listed. Type any command to execute it.`,
-          data: { commandCount: 8, encryptionActive: true },
+          data: { commandCount: 11, encryptionActive: true },
         };
 
       case "stats":
