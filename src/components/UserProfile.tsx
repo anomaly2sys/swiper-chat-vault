@@ -207,7 +207,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
                 <div className="flex items-center space-x-4 text-sm text-gray-400">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    Joined {currentUser.joinedAt.toLocaleDateString()}
+                    Joined{" "}
+                    {new Date(currentUser.joinedAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      },
+                    )}
                   </div>
                   <div className="flex items-center">
                     <MessageSquare className="h-4 w-4 mr-1" />
