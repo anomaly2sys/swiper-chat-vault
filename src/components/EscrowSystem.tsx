@@ -184,18 +184,34 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
     return roles.includes("verified-vendor");
   };
 
+  const getFeeSettings = () => {
+    const saved = localStorage.getItem("swiperEmpire_feeSettings");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return { empireElite: 0, verifiedVendor: 3, regularVendor: 7 };
+      }
+    }
+    return { empireElite: 0, verifiedVendor: 3, regularVendor: 7 };
+  };
+
   const calculateFee = (
     amount: number,
     buyerId: number,
     sellerId: number,
   ): number => {
-    // Empire Elite members pay 0% fees
+    const feeSettings = getFeeSettings();
+
+    // Empire Elite members pay the configured empire elite fee
     if (isEmpireElite(buyerId)) {
-      return 0;
+      return Math.floor(amount * (feeSettings.empireElite / 100));
     }
 
-    // 3% for verified vendors, 7% for regular vendors
-    const feePercentage = isVerifiedVendor(sellerId) ? 0.03 : 0.07;
+    // Use configured fees for verified vs regular vendors
+    const feePercentage = isVerifiedVendor(sellerId)
+      ? feeSettings.verifiedVendor / 100
+      : feeSettings.regularVendor / 100;
     return Math.floor(amount * feePercentage);
   };
 
