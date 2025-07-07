@@ -72,26 +72,15 @@ interface EscrowSystemProps {
 }
 
 const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
-  const [transactions, setTransactions] = useState<EscrowTransaction[]>(() => {
-    const saved = localStorage.getItem("swiperEmpire_escrowTransactions");
-    if (saved) {
-      try {
-        return JSON.parse(saved).map((tx: any) => ({
-          ...tx,
-          createdAt: new Date(tx.createdAt),
-          fundedAt: tx.fundedAt ? new Date(tx.fundedAt) : undefined,
-          completedAt: tx.completedAt ? new Date(tx.completedAt) : undefined,
-          messages: tx.messages.map((msg: any) => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp),
-          })),
-        }));
-      } catch {
-        return getDemoTransactions();
-      }
+  const generateBitcoinAddress = (): string => {
+    // Generate a fake Bitcoin address for demo
+    const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    let result = "1";
+    for (let i = 0; i < 33; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    return getDemoTransactions();
-  });
+    return result;
+  };
 
   const getDemoTransactions = (): EscrowTransaction[] => {
     return [
