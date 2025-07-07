@@ -720,25 +720,28 @@ ${defaultRoles.map((r) => `• ${r.name}`).join("\n")}`,
           </div>
         </ScrollArea>
 
-        {/* Command Input */}
-        <form onSubmit={handleSubmit} className="flex space-x-2">
+        {/* Admin Command Input */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex space-x-2 p-4 bg-gradient-to-r from-red-900/20 to-purple-900/20 border-2 border-yellow-500/30 rounded-lg"
+        >
           <div className="relative flex-1">
-            <Terminal className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Terminal className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-yellow-400" />
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Enter admin command (e.g., /help, /users, /stats)..."
-              className="pl-10 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+              placeholder="⚡ ADMIN COMMAND LINE - Enter / commands for system control..."
+              className="pl-10 bg-black/60 border-yellow-500/50 text-yellow-100 placeholder-yellow-400/70 font-mono focus:border-yellow-400 focus:ring-yellow-400/20"
               disabled={isLoading}
             />
           </div>
           <Button
             type="submit"
             disabled={isLoading || !inputValue.trim()}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-black font-bold"
           >
             {isLoading ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent" />
             ) : (
               <Send className="h-4 w-4" />
             )}
