@@ -430,7 +430,7 @@ const RoleManagement: React.FC = () => {
                         <SelectValue placeholder="Choose a user" />
                       </SelectTrigger>
                       <SelectContent>
-                        {getAllUsers().map((user) => (
+                        {allUsers.map((user) => (
                           <SelectItem key={user.id} value={user.id.toString()}>
                             {user.displayName} (@{user.username})
                           </SelectItem>
