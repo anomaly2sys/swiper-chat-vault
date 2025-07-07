@@ -45,7 +45,15 @@ const RoleBadge: React.FC<RoleBadgeProps> = ({
   if (roles.length > 0) {
     const primaryRole = roles[0].toLowerCase();
 
+    // Check for Empire Elite first (highest priority)
+    if (roles.some((role) => role.toLowerCase() === "empire-elite")) {
+      return <EmpireEliteBadge size="sm" showText={false} />;
+    }
+
     switch (primaryRole) {
+      case "empire-elite":
+        return <EmpireEliteBadge size="sm" showText={false} />;
+
       case "moderator":
         return (
           <Badge
