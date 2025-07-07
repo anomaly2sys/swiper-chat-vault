@@ -88,6 +88,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
         bio: formData.bio,
         email: formData.email || undefined,
         phone: formData.phone || undefined,
+        profilePicture: formData.profilePicture || undefined,
       });
 
       toast({
@@ -96,6 +97,23 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
       });
 
       setIsEditing(false);
+    }
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Create a preview URL for the image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setFormData((prev) => ({ ...prev, profilePicture: result }));
+        toast({
+          title: "Image uploaded",
+          description: "Profile picture updated successfully",
+        });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
