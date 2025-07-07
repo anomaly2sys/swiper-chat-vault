@@ -72,6 +72,9 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
     // Owner automatically has vendor roles
     if (userRole === "owner") return true;
 
+    // Admin also gets vendor access
+    if (currentUser?.isAdmin) return true;
+
     // Check if user has vendor or verified vendor role
     const userRoles = JSON.parse(
       localStorage.getItem("swiperEmpire_userRoles") || "[]",
@@ -79,6 +82,17 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
     const currentUserRoles = userRoles.find(
       (ur: any) => ur.userId === currentUser?.id,
     );
+
+    console.log("Debug - hasVendorRole:", {
+      userRole,
+      isAdmin: currentUser?.isAdmin,
+      userId: currentUser?.id,
+      userRoles,
+      currentUserRoles,
+      hasVendorRole:
+        currentUserRoles?.roles?.includes("vendor") ||
+        currentUserRoles?.roles?.includes("verified-vendor"),
+    });
 
     if (!currentUserRoles) {
       return false;
