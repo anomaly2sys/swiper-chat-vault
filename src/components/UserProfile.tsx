@@ -166,7 +166,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
             <div className="flex items-start space-x-4">
               <div className="relative">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={currentUser.profilePicture} />
+                  <AvatarImage
+                    src={formData.profilePicture || currentUser.profilePicture}
+                  />
                   <AvatarFallback className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-2xl">
                     {currentUser.username.charAt(0).toUpperCase()}
                   </AvatarFallback>
@@ -174,10 +176,19 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="absolute -bottom-2 -right-2 h-8 w-8 p-0 rounded-full border-purple-500/30 bg-black/60"
+                  className="absolute -bottom-2 -right-2 h-8 w-8 p-0 rounded-full border-purple-500/30 bg-black/60 hover:bg-black/80"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={!isEditing}
                 >
                   <Camera className="h-4 w-4" />
                 </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
               </div>
 
               <div className="flex-1 space-y-3">
