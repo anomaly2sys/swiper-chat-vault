@@ -271,30 +271,6 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
           },
         ],
       },
-      {
-        id: "admin-cat",
-        name: "Admin Zone",
-        serverId: "swiper-empire",
-        position: 1,
-        channels: [
-          {
-            id: "admin-console",
-            name: "admin-console",
-            type: "text",
-            categoryId: "admin-cat",
-            serverId: "swiper-empire",
-            topic: "Administrative commands and bot management - ADMIN ONLY",
-            position: 0,
-            permissions: [
-              {
-                roleId: "admin-role",
-                allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
-                deny: ["VIEW_CHANNEL"],
-              },
-            ],
-          },
-        ],
-      },
     ],
     roles: [
       {
