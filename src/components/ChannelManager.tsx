@@ -69,13 +69,19 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
   const canManageChannels = userRole === "owner" || userRole === "moderator";
 
   const hasVendorRole = () => {
+    // ALWAYS allow admins to create shop channels
+    if (currentUser?.isAdmin) {
+      console.log("✅ Admin access granted for shop channels");
+      return true;
+    }
+
     // Owner automatically has vendor roles
-    if (userRole === "owner") return true;
+    if (userRole === "owner") {
+      console.log("✅ Server owner access granted for shop channels");
+      return true;
+    }
 
-    // Admin also gets vendor access
-    if (currentUser?.isAdmin) return true;
-
-    // Check if user has vendor or verified vendor role
+    // Check user roles from localStorage
     const userRoles = JSON.parse(
       localStorage.getItem("swiperEmpire_userRoles") || "[]",
     );
@@ -83,26 +89,20 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
       (ur: any) => ur.userId === currentUser?.id,
     );
 
-    console.log("Debug - hasVendorRole:", {
-      userRole,
+    const hasVendor =
+      currentUserRoles?.roles?.includes("vendor") ||
+      currentUserRoles?.roles?.includes("verified-vendor");
+
+    console.log("🔍 Shop Channel Access Check:", {
       isAdmin: currentUser?.isAdmin,
+      userRole,
       userId: currentUser?.id,
-      userRoles,
-      currentUserRoles,
-      hasVendorRole:
-        currentUserRoles?.roles?.includes("vendor") ||
-        currentUserRoles?.roles?.includes("verified-vendor"),
+      currentUserRoles: currentUserRoles?.roles || [],
+      hasVendor,
+      finalResult: hasVendor,
     });
 
-    if (!currentUserRoles) {
-      return false;
-    }
-
-    return (
-      currentUserRoles.roles &&
-      (currentUserRoles.roles.includes("vendor") ||
-        currentUserRoles.roles.includes("verified-vendor"))
-    );
+    return hasVendor;
   };
 
   const getChannelIcon = (type: ChannelType) => {
