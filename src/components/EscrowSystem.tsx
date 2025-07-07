@@ -82,55 +82,6 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
     return result;
   };
 
-  const getDemoTransactions = (): EscrowTransaction[] => {
-    return [
-      {
-        id: "escrow-demo-1",
-        productId: "product-demo-1",
-        productName: "Premium Bitcoin Guide",
-        buyerId: 999,
-        buyerUsername: "crypto_learner",
-        sellerId: 888,
-        sellerUsername: "bitcoin_master",
-        amount: 50000000, // 0.5 BTC in satoshis
-        fee: 3500000, // 7% fee
-        empireEliteFee: 0,
-        status: "completed",
-        createdAt: new Date(Date.now() - 86400000 * 3), // 3 days ago
-        fundedAt: new Date(Date.now() - 86400000 * 2), // 2 days ago
-        completedAt: new Date(Date.now() - 86400000), // 1 day ago
-        buyerAddress: generateBitcoinAddress(),
-        sellerAddress: generateBitcoinAddress(),
-        escrowAddress: generateBitcoinAddress(),
-        messages: [
-          {
-            id: "msg-1",
-            userId: 0,
-            username: "Escrow System",
-            content:
-              "Escrow transaction created. Buyer must fund escrow address.",
-            timestamp: new Date(Date.now() - 86400000 * 3),
-            isSystem: true,
-          },
-          {
-            id: "msg-2",
-            userId: 999,
-            username: "crypto_learner",
-            content: "Payment sent to escrow address. Ready to proceed!",
-            timestamp: new Date(Date.now() - 86400000 * 2),
-          },
-          {
-            id: "msg-3",
-            userId: 888,
-            username: "bitcoin_master",
-            content: "Guide delivered via encrypted message. Enjoy learning!",
-            timestamp: new Date(Date.now() - 86400000),
-          },
-        ],
-      },
-    ];
-  };
-
   const [transactions, setTransactions] = useState<EscrowTransaction[]>(() => {
     const saved = localStorage.getItem("swiperEmpire_escrowTransactions");
     if (saved) {
