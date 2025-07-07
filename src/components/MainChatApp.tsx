@@ -598,55 +598,62 @@ const MainChatApp: React.FC = () => {
             </ScrollArea>
           )}
 
-          {/* Message Input - Hidden for Admin Console */}
-          {!isAdminChannel && (
-            <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-gray-400 hover:text-white"
-                >
-                  <Paperclip className="h-4 w-4" />
-                </Button>
+          {/* Message Input - Hidden for Admin Console, Voice Channels, and Announcements for non-admins */}
+          {!isAdminChannel &&
+            currentChannel?.type !== "voice" &&
+            (currentChannel?.type !== "announcements" ||
+              currentUser?.isAdmin ||
+              getUserRole(currentServer, currentUser?.id) === "owner" ||
+              getUserRole(currentServer, currentUser?.id) === "moderator") && (
+              <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-white"
+                  >
+                    <Paperclip className="h-4 w-4" />
+                  </Button>
 
-                <div className="flex-1 relative">
-                  <Input
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder={`Message #${currentChannel?.name || "channel"}`}
-                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 pr-20"
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                  />
-                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-white"
-                    >
-                      <Smile className="h-4 w-4" />
-                    </Button>
+                  <div className="flex-1 relative">
+                    <Input
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder={`Message #${currentChannel?.name || "channel"}`}
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 pr-20"
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && handleSendMessage()
+                      }
+                    />
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                      >
+                        <Smile className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!newMessage.trim()}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+                  <div className="flex items-center space-x-4">
+                    <span>🔒 End-to-end encrypted</span>
+                    <span>🔥 Messages disappear in 35s</span>
+                    <span>📝 {newMessage.length}/2000</span>
                   </div>
                 </div>
-
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!newMessage.trim()}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
               </div>
-
-              <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
-                <div className="flex items-center space-x-4">
-                  <span>🔒 End-to-end encrypted</span>
-                  <span>🔥 Messages disappear in 35s</span>
-                  <span>📝 {newMessage.length}/2000</span>
-                </div>
-              </div>
-            </div>
-          )}
+            )}
         </div>
 
         {/* Profile Modal */}
