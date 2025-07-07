@@ -129,6 +129,11 @@ const UnifiedAdminBot: React.FC = () => {
 • \`/kick [username]\` - Kick user from current server
 • \`/warn [username] [reason]\` - Issue warning to user
 
+**🎭 Role Management:**
+• \`/roles list\` - Display all available roles
+• \`/roles assign <username> <role>\` - Assign role to user
+• \`/roles remove <username> <role>\` - Remove role from user
+
 **📊 System Operations:**
 • \`/stats\` - Display comprehensive system statistics
 • \`/online\` - Show all currently online users
