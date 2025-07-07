@@ -39,11 +39,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
   const { currentUser, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     displayName: currentUser?.displayName || "",
     bio: currentUser?.bio || "",
     email: currentUser?.email || "",
     phone: currentUser?.phone || "",
+    profilePicture: currentUser?.profilePicture || "",
   });
   const [settings, setSettings] = useState({
     showOnlineStatus: true,
