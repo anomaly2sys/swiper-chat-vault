@@ -123,6 +123,9 @@ const UnifiedAdminBot: React.FC = () => {
 • \`/users\` - List all registered users
 • \`/user [username]\` - Get detailed user information
 • \`/online\` - Show all currently online users
+• \`/ban [username]\` - Ban a user from the platform
+• \`/mute [username] [minutes]\` - Mute a user temporarily
+• \`/kick [username]\` - Kick user from server
 
 **🎭 Role Management:**
 • \`/roles list\` - Display all available roles
@@ -179,7 +182,7 @@ const UnifiedAdminBot: React.FC = () => {
 • Database Health: **100%** ✅
 
 **💰 Commerce:**
-����� Bitcoin Transactions: **₿${(Math.random() * 5).toFixed(4)}**
+��� Bitcoin Transactions: **₿${(Math.random() * 5).toFixed(4)}**
 • Active Products: **${Math.floor(Math.random() * 100) + 50}**
 • Pending Tickets: **${Math.floor(Math.random() * 10)}**`,
           data: fakeStats,
