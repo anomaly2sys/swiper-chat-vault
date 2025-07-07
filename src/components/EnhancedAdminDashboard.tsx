@@ -53,6 +53,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { realDatabaseService } from "@/services/realDatabaseService";
 import UnifiedAdminBot from "./UnifiedAdminBot";
 import RoleManagement from "./RoleManagement";
+import EscrowSystem from "./EscrowSystem";
+import SupportSystem from "./SupportSystem";
 
 interface SystemStats {
   totalUsers: number;
