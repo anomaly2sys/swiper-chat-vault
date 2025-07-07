@@ -68,6 +68,29 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
 
   const canManageChannels = userRole === "owner" || userRole === "moderator";
 
+  const hasVendorRole = () => {
+    if (userRole !== "owner") return false;
+
+    // Check if user has vendor or verified vendor role
+    const userRoles = JSON.parse(
+      localStorage.getItem("swiperEmpire_userRoles") || "[]",
+    );
+    const currentUserRoles = userRoles.find(
+      (ur: any) => ur.userId === currentUser?.id,
+    );
+
+    if (!currentUserRoles) {
+      // Owner automatically has vendor roles
+      return userRole === "owner";
+    }
+
+    return (
+      currentUserRoles.roles.includes("vendor") ||
+      currentUserRoles.roles.includes("verified-vendor") ||
+      userRole === "owner"
+    );
+  };
+
   const getChannelIcon = (type: ChannelType) => {
     switch (type) {
       case "text":
