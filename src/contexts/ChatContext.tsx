@@ -539,7 +539,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     if (!currentServer || !currentUser) return;
 
     const newChannel: Channel = {
-      id: `ch-${Date.now()}`,
+      id: `ch-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name,
       type,
       categoryId,
@@ -548,8 +548,9 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
       permissions: [],
     };
 
-    setServers((prev) =>
-      prev.map((server) =>
+    // Update servers state
+    setServers((prev) => {
+      const updatedServers = prev.map((server) =>
         server.id === currentServer.id
           ? {
               ...server,
@@ -560,8 +561,26 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
               ),
             }
           : server,
+      );
+
+      // Also update localStorage immediately
+      localStorage.setItem(
+        "swiperEmpire_servers",
+        JSON.stringify(updatedServers),
+      );
+      return updatedServers;
+    });
+
+    // Update current server to reflect changes immediately
+    const updatedCurrentServer = {
+      ...currentServer,
+      categories: currentServer.categories.map((cat) =>
+        cat.id === categoryId
+          ? { ...cat, channels: [...cat.channels, newChannel] }
+          : cat,
       ),
-    );
+    };
+    setCurrentServer(updatedCurrentServer);
   };
 
   const createCategory = (name: string, serverId: string) => {
