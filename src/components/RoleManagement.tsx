@@ -237,8 +237,26 @@ const RoleManagement: React.FC = () => {
       return;
     }
 
-    const user = allUsers.find((u) => u.id.toString() === selectedUser);
-    if (!user) return;
+    if (!Array.isArray(allUsers) || allUsers.length === 0) {
+      toast({
+        title: "No users available",
+        description: "Unable to assign role - no users loaded",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const user = allUsers.find(
+      (u) => u && u.id && u.id.toString() === selectedUser,
+    );
+    if (!user) {
+      toast({
+        title: "User not found",
+        description: "Selected user could not be found",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const existingUserRole = userRoles.find((ur) => ur.userId === user.id);
 
