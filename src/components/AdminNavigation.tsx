@@ -20,6 +20,7 @@ import EscrowSystem from "./EscrowSystem";
 import SupportSystem from "./SupportSystem";
 import UnifiedAdminBot from "./UnifiedAdminBot";
 import EmpireEliteBadge from "./EmpireEliteBadge";
+import FeeManagementSystem from "./FeeManagementSystem";
 
 type AdminTab = "dashboard" | "roles" | "escrow" | "support" | "bot";
 
