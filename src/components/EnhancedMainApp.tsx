@@ -10,7 +10,7 @@ import {
   User,
 } from "lucide-react";
 import MainChatApp from "./MainChatApp";
-import EnhancedAdminDashboard from "./EnhancedAdminDashboard";
+import AdminNavigation from "./AdminNavigation";
 import EnhancedProfilePopup from "./EnhancedProfilePopup";
 
 type ViewType = "chat" | "admin";
