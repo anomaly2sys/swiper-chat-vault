@@ -69,7 +69,8 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
   const canManageChannels = userRole === "owner" || userRole === "moderator";
 
   const hasVendorRole = () => {
-    if (userRole !== "owner") return false;
+    // Owner automatically has vendor roles
+    if (userRole === "owner") return true;
 
     // Check if user has vendor or verified vendor role
     const userRoles = JSON.parse(
@@ -80,14 +81,13 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
     );
 
     if (!currentUserRoles) {
-      // Owner automatically has vendor roles
-      return userRole === "owner";
+      return false;
     }
 
     return (
-      currentUserRoles.roles.includes("vendor") ||
-      currentUserRoles.roles.includes("verified-vendor") ||
-      userRole === "owner"
+      currentUserRoles.roles &&
+      (currentUserRoles.roles.includes("vendor") ||
+        currentUserRoles.roles.includes("verified-vendor"))
     );
   };
 
