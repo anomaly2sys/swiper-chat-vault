@@ -665,6 +665,23 @@ const MainChatApp: React.FC = () => {
                 </div>
               </div>
             )}
+
+          {/* Restricted Channel Message */}
+          {!isAdminChannel &&
+            currentChannel?.type === "announcements" &&
+            !(
+              currentUser?.isAdmin ||
+              getUserRole(currentServer, currentUser?.id) === "owner" ||
+              getUserRole(currentServer, currentUser?.id) === "moderator"
+            ) && (
+              <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
+                <div className="text-center text-gray-400">
+                  <span className="text-yellow-400">📢</span> Only
+                  administrators, server owners, and moderators can send
+                  messages in announcement channels.
+                </div>
+              </div>
+            )}
         </div>
 
         {/* Profile Modal */}
