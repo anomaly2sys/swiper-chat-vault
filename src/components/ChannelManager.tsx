@@ -452,12 +452,12 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
           {!hasVendorRole() && (
             <Button
               onClick={() => {
-                // Force assign verified-vendor role for testing
+                // Force assign all necessary vendor roles
                 const userRoles = JSON.parse(
                   localStorage.getItem("swiperEmpire_userRoles") || "[]",
                 );
                 let userRole = userRoles.find(
-                  (ur: any) => ur.userId === currentUser.id,
+                  (ur: any) => ur.userId === currentUser?.id,
                 );
 
                 if (!userRole) {
@@ -465,29 +465,39 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
                     userId: currentUser.id,
                     username: currentUser.username,
                     displayName: currentUser.displayName,
-                    roles: [],
+                    roles: ["verified-vendor", "vendor", "member"],
                   };
                   userRoles.push(userRole);
+                } else {
+                  // Add all vendor roles if missing
+                  if (!userRole.roles.includes("verified-vendor")) {
+                    userRole.roles.push("verified-vendor");
+                  }
+                  if (!userRole.roles.includes("vendor")) {
+                    userRole.roles.push("vendor");
+                  }
+                  if (!userRole.roles.includes("member")) {
+                    userRole.roles.push("member");
+                  }
                 }
 
-                if (!userRole.roles.includes("verified-vendor")) {
-                  userRole.roles.push("verified-vendor");
-                  localStorage.setItem(
-                    "swiperEmpire_userRoles",
-                    JSON.stringify(userRoles),
-                  );
-                  toast({
-                    title: "Role assigned",
-                    description:
-                      "Verified vendor role added - you can now create shop channels!",
-                  });
-                  // Force refresh of hasVendorRole check
-                  window.location.reload();
-                }
+                localStorage.setItem(
+                  "swiperEmpire_userRoles",
+                  JSON.stringify(userRoles),
+                );
+
+                toast({
+                  title: "🛒 Shop Access Enabled!",
+                  description:
+                    "All vendor roles assigned. You can now create shop channels!",
+                });
+
+                // Force page reload to update role checks
+                setTimeout(() => window.location.reload(), 1000);
               }}
-              className="w-full bg-green-600 hover:bg-green-700 text-sm"
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold"
             >
-              🛒 Get Vendor Role (for shop channels)
+              🛒 Unlock Shop Channel Creation
             </Button>
           )}
         </div>
