@@ -45,7 +45,7 @@ const VoiceChatInterface: React.FC<VoiceChatInterfaceProps> = ({
     if (isConnected) {
       setVoiceUsers([
         {
-          id: currentUser?.id || "user1",
+          id: String(currentUser?.id || "user1"),
           username: currentUser?.username || "user",
           displayName: currentUser?.displayName || "User",
           isMuted,

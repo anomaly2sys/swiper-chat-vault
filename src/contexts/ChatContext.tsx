@@ -142,7 +142,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     if (currentUser && defaultServer) {
       const isAlreadyMember = defaultServer.members.some(
-        (m) => m.userId === currentUser.id,
+        (m) => String(m.userId) === String(currentUser.id),
       );
       if (!isAlreadyMember) {
         // Use actual user join date for admin, or current date for new users
@@ -168,7 +168,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
               ];
 
         const newMember: ServerMember = {
-          userId: currentUser.id,
+          userId: String(currentUser.id),
           serverId: defaultServer.id,
           roles: memberRoles,
           joinedAt: joinDate,
@@ -427,7 +427,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
       const dm: DirectMessage = {
         id: `dm-${Date.now()}`,
         content,
-        authorId: currentUser.id,
+        authorId: String(currentUser.id),
         recipientId,
         timestamp: new Date(),
         isDisappearing: true,
@@ -446,7 +446,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
       const message: Message = {
         id: `msg-${Date.now()}`,
         content,
-        authorId: currentUser.id,
+        authorId: String(currentUser.id),
         channelId: channelId || currentChannel?.id || "",
         serverId: currentServer?.id,
         timestamp: new Date(),
@@ -477,7 +477,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
       id: `server-${Date.now()}`,
       name,
       description,
-      ownerId: currentUser.id,
+      ownerId: String(currentUser.id),
       inviteCode: Math.random().toString(36).substring(7).toUpperCase(),
       categories: [
         {
@@ -510,7 +510,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
       ],
       members: [
         {
-          userId: currentUser.id,
+          userId: String(currentUser.id),
           serverId: `server-${Date.now()}`,
           roles: [`role-${Date.now()}`],
           joinedAt: new Date(),
@@ -528,10 +528,10 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
   const joinServer = (inviteCode: string): boolean => {
     const server = servers.find((s) => s.inviteCode === inviteCode);
     if (server && currentUser) {
-      const isMember = server.members.some((m) => m.userId === currentUser.id);
+      const isMember = server.members.some((m) => String(m.userId) === String(currentUser.id));
       if (!isMember) {
         const newMember: ServerMember = {
-          userId: currentUser.id,
+          userId: String(currentUser.id),
           serverId: server.id,
           roles: [server.roles.find((r) => r.name === "@everyone")?.id || ""],
           joinedAt: new Date(),
@@ -675,7 +675,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     if (!currentUser?.isAdmin) return;
 
     setServers((prev) => prev.filter((s) => s.id !== serverId));
-    if (currentServer?.id === serverId) {
+    if (String(currentServer?.id) === String(serverId)) {
       setCurrentServer(servers.find((s) => s.id !== serverId) || null);
     }
   };

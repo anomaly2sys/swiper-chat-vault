@@ -159,9 +159,7 @@ const UserProfileViewer: React.FC<UserProfileViewerProps> = ({
           socialLinks: {
             github: user.isAdmin ? "https://github.com/blankbank" : undefined,
             twitter: user.isAdmin ? "https://twitter.com/blankbank" : undefined,
-          },
-          location: user.isAdmin ? "Digital Realm" : undefined,
-          timezone: "UTC",
+          }
         };
 
         setUserProfile(profile);

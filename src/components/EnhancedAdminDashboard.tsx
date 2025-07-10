@@ -104,6 +104,7 @@ const EnhancedAdminDashboard: React.FC = () => {
         setTables(tablesData);
       } catch (apiError) {
         // Fallback to local data
+        const { realAuthService } = await import("@/services/realAuthService");
         const localUsers = await realAuthService.getAllUsers();
         setUsers(localUsers);
 

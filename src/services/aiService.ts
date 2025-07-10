@@ -1,5 +1,8 @@
 // Simple AI Service
 class AIService {
+  private isEnabled: boolean;
+  private apiKey: string | null;
+
   constructor() {
     this.isEnabled = false;
     this.apiKey = null;

@@ -351,7 +351,7 @@ const ServerManager: React.FC<ServerManagerProps> = ({
               </Card>
 
               {/* Create Channel */}
-              {(currentUser?.isAdmin || server.ownerId === currentUser?.id) && (
+              {(currentUser?.isAdmin || String(server.ownerId) === String(currentUser?.id)) && (
                 <Card className="bg-blue-500/10 border-blue-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm text-blue-300 flex items-center">
@@ -424,7 +424,7 @@ const ServerManager: React.FC<ServerManagerProps> = ({
               )}
 
               {/* Create Category */}
-              {(currentUser?.isAdmin || server.ownerId === currentUser?.id) && (
+              {(currentUser?.isAdmin || String(server.ownerId) === String(currentUser?.id)) && (
                 <Card className="bg-purple-500/10 border-purple-500/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm text-purple-300">

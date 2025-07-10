@@ -189,9 +189,9 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
       id: `escrow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       productId: `product-${Date.now()}`,
       productName: newEscrow.productName,
-      buyerId: currentUser.id,
+      buyerId: String(currentUser.id),
       buyerUsername: currentUser.username,
-      sellerId: sellerId,
+      sellerId: String(sellerId),
       sellerUsername: newEscrow.sellerUsername,
       amount: newEscrow.amount,
       fee: fee,
@@ -204,7 +204,7 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
       messages: [
         {
           id: `msg-${Date.now()}`,
-          userId: 0,
+          userId: "0",
           username: "Escrow System",
           content: `Escrow transaction created for ${newEscrow.productName}. Buyer must fund escrow address to proceed.`,
           timestamp: new Date(),
@@ -270,7 +270,7 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
 
     const message: EscrowMessage = {
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      userId: currentUser.id,
+      userId: String(currentUser.id),
       username: currentUser.username,
       content: content.trim(),
       timestamp: new Date(),
@@ -571,17 +571,17 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
                 </div>
 
                 {currentUser &&
-                  (selectedTransaction.buyerId === currentUser.id ||
-                    selectedTransaction.sellerId === currentUser.id) && (
+                  (selectedTransaction.buyerId === String(currentUser.id) ||
+                    selectedTransaction.sellerId === String(currentUser.id)) && (
                     <div className="flex space-x-2">
                       {selectedTransaction.status === "pending" &&
-                        selectedTransaction.buyerId === currentUser.id && (
+                        selectedTransaction.buyerId === String(currentUser.id) && (
                           <Button
                             onClick={() => {
                               // Add a system message about funding
                               const fundMessage: EscrowMessage = {
                                 id: `msg-${Date.now()}`,
-                                userId: 0,
+                                userId: "0",
                                 username: "Escrow System",
                                 content: `✅ Escrow funded! ${formatBitcoin(selectedTransaction.amount + selectedTransaction.fee)} received at escrow address. Seller can now deliver the product.`,
                                 timestamp: new Date(),
@@ -626,7 +626,7 @@ const EscrowSystem: React.FC<EscrowSystemProps> = ({ serverId }) => {
                         )}
 
                       {selectedTransaction.status === "funded" &&
-                        selectedTransaction.sellerId === currentUser.id && (
+                        selectedTransaction.sellerId === String(currentUser.id) && (
                           <Button
                             onClick={() =>
                               updateTransactionStatus(

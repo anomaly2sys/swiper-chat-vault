@@ -578,13 +578,13 @@ const RoleManagement: React.FC = () => {
                   <div className="flex flex-wrap gap-2">
                     {userRole.roles.map((roleId) => (
                       <div key={roleId} className="flex items-center space-x-1">
-                        <Badge
-                          style={{
-                            backgroundColor: getRoleColor(roleId) + "20",
-                            color: getRoleColor(roleId),
-                          }}
-                          className="border"
-                          style={{ borderColor: getRoleColor(roleId) + "50" }}
+                         <Badge
+                           style={{
+                             backgroundColor: getRoleColor(roleId) + "20",
+                             color: getRoleColor(roleId),
+                             borderColor: getRoleColor(roleId) + "50"
+                           }}
+                           className="border"
                         >
                           {getRoleName(roleId)}
                         </Badge>

@@ -290,7 +290,7 @@ const EnhancedAdminBot: React.FC<EnhancedAdminBotProps> = ({ onCommand }) => {
     const aiQuery = {
       command: cmd,
       args,
-      context: { servers, roles, mutedUsers, bannedUsers },
+      context: { servers: [], roles: [], mutedUsers: [], bannedUsers: [] },
     };
 
     setTimeout(async () => {

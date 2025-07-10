@@ -177,7 +177,7 @@ const MainChatApp: React.FC = () => {
             <ServerContextMenu
               key={server.id}
               server={server}
-              userRole={getUserRole(server, currentUser?.id)}
+              userRole={getUserRole(server, String(currentUser?.id || "")) as "owner" | "moderator" | "member"}
             >
               <Button
                 variant="ghost"
@@ -280,7 +280,7 @@ const MainChatApp: React.FC = () => {
                       {category.name}
                     </span>
                     {(currentUser?.isAdmin ||
-                      currentServer?.ownerId === currentUser?.id) && (
+                      String(currentServer?.ownerId) === String(currentUser?.id)) && (
                       <Button
                         variant="ghost"
                         size="sm"
@@ -304,7 +304,7 @@ const MainChatApp: React.FC = () => {
                       <ChannelContextMenu
                         key={channel.id}
                         channel={channel}
-                        userRole={getUserRole(currentServer, currentUser?.id)}
+                        userRole={getUserRole(currentServer, String(currentUser?.id || "")) as "owner" | "moderator" | "member"}
                       >
                         <Button
                           variant="ghost"
@@ -624,10 +624,10 @@ const MainChatApp: React.FC = () => {
           {/* Message Input - Hidden for Admin Console, Voice Channels, and Announcements for non-admins */}
           {!isAdminChannel &&
             currentChannel?.type !== "voice" &&
-            (currentChannel?.type !== "announcements" ||
+            (currentChannel?.type !== "announcement" ||
               currentUser?.isAdmin ||
-              getUserRole(currentServer, currentUser?.id) === "owner" ||
-              getUserRole(currentServer, currentUser?.id) === "moderator") && (
+              getUserRole(currentServer, String(currentUser?.id || "")) === "owner" ||
+              getUserRole(currentServer, String(currentUser?.id || "")) === "moderator") && (
               <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
                 <div className="flex items-center space-x-2">
                   <Button
@@ -680,11 +680,11 @@ const MainChatApp: React.FC = () => {
 
           {/* Restricted Channel Message */}
           {!isAdminChannel &&
-            currentChannel?.type === "announcements" &&
+            currentChannel?.type === "announcement" &&
             !(
               currentUser?.isAdmin ||
-              getUserRole(currentServer, currentUser?.id) === "owner" ||
-              getUserRole(currentServer, currentUser?.id) === "moderator"
+              getUserRole(currentServer, String(currentUser?.id || "")) === "owner" ||
+              getUserRole(currentServer, String(currentUser?.id || "")) === "moderator"
             ) && (
               <div className="p-4 border-t border-purple-500/30 bg-black/40 backdrop-blur-xl">
                 <div className="text-center text-gray-400">
