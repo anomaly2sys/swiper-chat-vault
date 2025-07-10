@@ -32,6 +32,7 @@ interface ChannelContextMenuProps {
   children: React.ReactNode;
   channel: any;
   userRole?: "owner" | "moderator" | "member";
+  onEdit?: () => void;
   onUpdateChannel?: (channelId: string, updates: any) => void;
   onDeleteChannel?: (channelId: string) => void;
 }
@@ -40,6 +41,7 @@ const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({
   children,
   channel,
   userRole = "member",
+  onEdit,
   onUpdateChannel,
   onDeleteChannel,
 }) => {
@@ -206,13 +208,15 @@ const ChannelContextMenu: React.FC<ChannelContextMenuProps> = ({
       <ContextMenu>
         <ContextMenuTrigger>{children}</ContextMenuTrigger>
         <ContextMenuContent className="bg-black/90 border-purple-500/30 backdrop-blur-xl">
-          <ContextMenuItem
-            onClick={handleEditChannel}
-            className="text-gray-300"
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit Channel
-          </ContextMenuItem>
+          {onEdit && (
+            <ContextMenuItem
+              onClick={onEdit}
+              className="text-gray-300"
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Channel
+            </ContextMenuItem>
+          )}
 
           <ContextMenuItem className="text-gray-300">
             <Settings className="h-4 w-4 mr-2" />

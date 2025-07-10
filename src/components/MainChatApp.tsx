@@ -29,6 +29,8 @@ import {
   Reply,
   LogOut,
   Bot,
+  Megaphone,
+  ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +55,8 @@ import UserContextMenu from "./UserContextMenu";
 import MessageControls from "./MessageControls";
 import RoleBadge from "./RoleBadge";
 import VoiceChatInterface from "./VoiceChatInterface";
+import ShopChannelView from "./ShopChannelView";
+import ChannelEditDialog from "./ChannelEditDialog";
 import ServerContextMenu from "./ServerContextMenu";
 import ChannelContextMenu from "./ChannelContextMenu";
 
@@ -89,6 +93,26 @@ const MainChatApp: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const [showUserProfile, setShowUserProfile] = useState<string | null>(null);
+  const [showChannelEdit, setShowChannelEdit] = useState<any>(null);
+
+  // Helper function to check vendor roles
+  const hasVendorRole = (user: any) => {
+    if (!user) return false;
+    if (user.isAdmin) return true;
+    
+    try {
+      const userRoles = JSON.parse(localStorage.getItem("swiperEmpire_userRoles") || "[]");
+      const userRole = userRoles.find((ur: any) => String(ur.userId) === String(user.id));
+      return userRole && userRole.roles && 
+             (userRole.roles.includes("vendor") || 
+              userRole.roles.includes("verified-vendor") ||
+              userRole.roles.includes("empire-elite"));
+    } catch {
+      return false;
+    }
+  };
 
   // Helper function to get user role in a server
   const getUserRole = (server: any, userId: string | undefined): string => {
@@ -300,36 +324,48 @@ const MainChatApp: React.FC = () => {
 
                   {category.channels
                     .filter((channel) => canAccessChannel(channel, currentUser))
-                    .map((channel) => (
-                      <ChannelContextMenu
-                        key={channel.id}
-                        channel={channel}
-                        userRole={getUserRole(currentServer, String(currentUser?.id || "")) as "owner" | "moderator" | "member"}
-                      >
-                        <Button
-                          variant="ghost"
-                          className={`w-full justify-start mb-1 ${
-                            currentChannel?.id === channel.id
-                              ? "bg-purple-500/20 text-white"
-                              : "text-gray-300 hover:bg-gray-700"
-                          }`}
-                          onClick={() => {
-                            setCurrentChannel(channel);
-                            setSelectedDM(null);
-                          }}
+                    .map((channel) => {
+                      const isCurrentChannel = currentChannel?.id === channel.id;
+                      const channelIcon = 
+                        channel.type === "voice" ? <Volume2 className="h-4 w-4" /> :
+                        channel.type === "announcement" ? <Megaphone className="h-4 w-4" /> :
+                        channel.type === "shop" ? <ShoppingCart className="h-4 w-4" /> :
+                        <Hash className="h-4 w-4" />;
+                      
+                      return (
+                        <ChannelContextMenu
+                          key={channel.id}
+                          channel={channel}
+                          userRole={getUserRole(currentServer, String(currentUser?.id || "")) as "owner" | "moderator" | "member"}
+                          onEdit={() => setShowChannelEdit(channel)}
                         >
-                          {channel.type === "text" ? (
-                            <Hash className="h-4 w-4 mr-2" />
-                          ) : (
-                            <Volume2 className="h-4 w-4 mr-2" />
-                          )}
-                          {channel.name}
-                          {channel.name === "admin-console" && (
-                            <Crown className="h-3 w-3 ml-auto text-yellow-500" />
-                          )}
-                        </Button>
-                      </ChannelContextMenu>
-                    ))}
+                          <Button
+                            variant="ghost"
+                            className={`w-full justify-start mb-1 ${
+                              isCurrentChannel
+                                ? "bg-purple-500/20 text-white"
+                                : "text-gray-300 hover:bg-gray-700"
+                            }`}
+                           onClick={() => {
+                             setCurrentChannel(channel);
+                             setSelectedDM(null);
+                           }}
+                         >
+                           <div className="flex items-center space-x-2">
+                             <span className={
+                               channel.type === "voice" ? "text-green-400" :
+                               channel.type === "announcement" ? "text-yellow-400" :
+                               channel.type === "shop" ? "text-purple-400" :
+                               "text-gray-300"
+                             }>
+                               {channelIcon}
+                             </span>
+                             <span className="truncate">{channel.name}</span>
+                           </div>
+                         </Button>
+                       </ChannelContextMenu>
+                     );
+                   })}
                 </div>
               ))}
           </ScrollArea>
@@ -476,9 +512,17 @@ const MainChatApp: React.FC = () => {
             )}
           </div>
 
-          {/* Messages / Admin Bot / Voice Chat */}
+          {/* Messages / Admin Bot / Voice Chat / Shop */}
           {isAdminChannel ? (
             <UnifiedAdminBot />
+          ) : currentChannel?.type === "shop" ? (
+            <ShopChannelView
+              channelId={currentChannel.id}
+              serverId={currentServer?.id || ""}
+              canManageProducts={currentUser?.isAdmin || 
+                getUserRole(currentServer, String(currentUser?.id || "")) === "owner" ||
+                hasVendorRole(currentUser)}
+            />
           ) : currentChannel?.type === "voice" ? (
             <VoiceChatInterface channelName={currentChannel.name} />
           ) : (
@@ -621,9 +665,10 @@ const MainChatApp: React.FC = () => {
             </ScrollArea>
           )}
 
-          {/* Message Input - Hidden for Admin Console, Voice Channels, and Announcements for non-admins */}
+          {/* Message Input - Hidden for Admin Console, Voice Channels, Shop Channels, and Announcements for non-admins */}
           {!isAdminChannel &&
             currentChannel?.type !== "voice" &&
+            currentChannel?.type !== "shop" &&
             (currentChannel?.type !== "announcement" ||
               currentUser?.isAdmin ||
               getUserRole(currentServer, String(currentUser?.id || "")) === "owner" ||
@@ -695,6 +740,42 @@ const MainChatApp: React.FC = () => {
               </div>
             )}
         </div>
+
+        {/* Channel Edit Dialog */}
+        <ChannelEditDialog
+          channel={showChannelEdit}
+          isOpen={!!showChannelEdit}
+          onClose={() => setShowChannelEdit(null)}
+          onSave={(channelId, updates) => {
+            // Update channel in localStorage and state
+            const servers = JSON.parse(localStorage.getItem("swiperEmpire_servers") || "[]");
+            const updatedServers = servers.map((server: any) => ({
+              ...server,
+              categories: server.categories.map((cat: any) => ({
+                ...cat,
+                channels: cat.channels.map((ch: any) => 
+                  ch.id === channelId ? { ...ch, ...updates } : ch
+                )
+              }))
+            }));
+            localStorage.setItem("swiperEmpire_servers", JSON.stringify(updatedServers));
+            window.location.reload(); // Refresh to see changes
+          }}
+          onDelete={(channelId) => {
+            // Delete channel from localStorage
+            const servers = JSON.parse(localStorage.getItem("swiperEmpire_servers") || "[]");
+            const updatedServers = servers.map((server: any) => ({
+              ...server,
+              categories: server.categories.map((cat: any) => ({
+                ...cat,
+                channels: cat.channels.filter((ch: any) => ch.id !== channelId)
+              }))
+            }));
+            localStorage.setItem("swiperEmpire_servers", JSON.stringify(updatedServers));
+            window.location.reload(); // Refresh to see changes
+          }}
+          canDelete={currentUser?.isAdmin || getUserRole(currentServer, String(currentUser?.id || "")) === "owner"}
+        />
 
         {/* Profile Modal */}
         {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
