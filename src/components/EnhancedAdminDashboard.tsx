@@ -104,17 +104,20 @@ const EnhancedAdminDashboard: React.FC = () => {
         setTables(tablesData);
       } catch (apiError) {
         // Fallback to local data
+        // Use real data service for accurate statistics
+        const { realDataService } = await import("@/services/realDataService");
+        const realStats = realDataService.getStats();
         const { realAuthService } = await import("@/services/realAuthService");
         const localUsers = await realAuthService.getAllUsers();
         setUsers(localUsers);
 
         setStats({
-          totalUsers: localUsers.length,
-          totalMessages: Math.floor(Math.random() * 1000) + 500,
-          totalServers: 3,
-          activeUsers: localUsers.filter((u) => u.status === "online").length,
-          systemUptime: "2 hours 15 minutes",
-          databaseSize: "~500KB (Local Storage)",
+          totalUsers: realStats.totalUsers,
+          totalMessages: realStats.totalMessages,
+          totalServers: realStats.totalServers,
+          activeUsers: realStats.activeUsers,
+          systemUptime: realStats.systemUptime,
+          databaseSize: realStats.databaseSize,
         });
 
         setTables([

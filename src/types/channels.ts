@@ -1,4 +1,4 @@
-export type ChannelType = "text" | "voice" | "announcements" | "shop";
+export type ChannelType = "text" | "voice" | "announcement" | "shop";
 
 export interface Channel {
   id: string;
@@ -52,7 +52,7 @@ export interface TicketMessage {
 export const CHANNEL_PERMISSIONS = {
   text: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "ATTACH_FILES"],
   voice: ["VIEW_CHANNEL", "CONNECT", "SPEAK", "MUTE_MEMBERS"],
-  announcements: ["VIEW_CHANNEL", "SEND_MESSAGES"], // Only certain roles
+  announcement: ["VIEW_CHANNEL", "SEND_MESSAGES"], // Only certain roles
   shop: ["VIEW_CHANNEL", "CREATE_PRODUCTS", "BUY_PRODUCTS"],
 } as const;
 

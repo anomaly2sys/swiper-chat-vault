@@ -31,7 +31,7 @@ export interface Category {
 export interface Channel {
   id: string;
   name: string;
-  type: "text" | "voice" | "announcement";
+  type: "text" | "voice" | "announcement" | "shop";
   categoryId: string;
   serverId: string;
   topic?: string;
@@ -118,7 +118,7 @@ export interface ChatContextType {
   joinServer: (inviteCode: string) => boolean;
   createChannel: (
     name: string,
-    type: "text" | "voice" | "announcement",
+    type: "text" | "voice" | "announcement" | "shop",
     categoryId: string,
   ) => void;
   createCategory: (name: string, serverId: string) => void;
@@ -554,7 +554,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
 
   const createChannel = (
     name: string,
-    type: "text" | "voice" | "announcement",
+    type: "text" | "voice" | "announcement" | "shop",
     categoryId: string,
   ) => {
     if (!currentServer || !currentUser) return;

@@ -80,7 +80,7 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
         return <Hash className="h-4 w-4" />;
       case "voice":
         return <Volume2 className="h-4 w-4" />;
-      case "announcements":
+      case "announcement":
         return <Megaphone className="h-4 w-4" />;
       case "shop":
         return <ShoppingCart className="h-4 w-4" />;
@@ -93,7 +93,7 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
         return "text-gray-300";
       case "voice":
         return "text-green-400";
-      case "announcements":
+      case "announcement":
         return "text-yellow-400";
       case "shop":
         return "text-purple-400";
@@ -101,8 +101,8 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
   };
 
   const validateChannelCreation = (type: ChannelType): boolean => {
-    if (type === "announcements") {
-      const hasAnnouncements = channels.some((c) => c.type === "announcements");
+    if (type === "announcement") {
+      const hasAnnouncements = channels.some((c) => c.type === "announcement");
       if (hasAnnouncements) {
         toast({
           title: "Cannot create channel",
@@ -316,9 +316,9 @@ const ChannelManager: React.FC<ChannelManagerProps> = ({
                         </div>
                       </SelectItem>
                       <SelectItem
-                        value="announcements"
+                        value="announcement"
                         disabled={channels.some(
-                          (c) => c.type === "announcements",
+                          (c) => c.type === "announcement",
                         )}
                       >
                         <div className="flex items-center space-x-2">

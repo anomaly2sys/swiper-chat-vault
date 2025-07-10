@@ -13,6 +13,7 @@ import {
   Lock,
   Hash,
   Volume2,
+  ShoppingCart,
   Edit,
   Save,
   X,
@@ -62,7 +63,7 @@ const ServerManager: React.FC<ServerManagerProps> = ({
     description: server?.description || "",
     inviteCode: "",
     channelName: "",
-    channelType: "text" as "text" | "voice" | "announcement",
+    channelType: "text" as "text" | "voice" | "announcement" | "shop",
     categoryName: "",
   });
   const [copied, setCopied] = useState(false);
@@ -375,7 +376,7 @@ const ServerManager: React.FC<ServerManagerProps> = ({
                       <Select
                         value={formData.channelType}
                         onValueChange={(
-                          value: "text" | "voice" | "announcement",
+                          value: "text" | "voice" | "announcement" | "shop",
                         ) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -406,6 +407,12 @@ const ServerManager: React.FC<ServerManagerProps> = ({
                             <div className="flex items-center">
                               <Crown className="h-4 w-4 mr-2" />
                               Announcement
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="shop" className="text-white">
+                            <div className="flex items-center">
+                              <ShoppingCart className="h-4 w-4 mr-2" />
+                              Shop
                             </div>
                           </SelectItem>
                         </SelectContent>
